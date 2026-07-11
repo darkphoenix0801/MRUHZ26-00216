@@ -258,6 +258,13 @@ def get_student_roadmap(student_id: str):
         "roadmap": structured_roadmap
     }
 
+@app.get("/interview/random_behavioral")
+def get_random_behavioral():
+    from backend.agent.hf_datasets import get_dataset_context
+    # "Behavioral" round type triggers the behavioral dataset fetch
+    question = get_dataset_context("Any", "Behavioral")
+    return {"question": question}
+
 # 6. Start Mock Interview Session (Agent Endpoint)
 @app.post("/interview/start")
 def start_interview(request: StartInterviewRequest):

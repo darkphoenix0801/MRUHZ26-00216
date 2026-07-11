@@ -44,20 +44,14 @@ export default function AudioSection({ user }: { user: any }) {
       const profile = await res.json();
       setSessionId(`audio_${Date.now()}`);
       
-      const behavioralQuestions = [
-        "Tell me about a time you faced a significant technical challenge at work or college and how you overcame it.",
-        "Describe a situation where you had a disagreement with a team member. How did you handle it?",
-        "Tell me about a time you had to learn a new technology or framework under a tight deadline.",
-        "Can you share an experience where a project you were working on failed or didn't meet expectations?",
-        "Describe a time you had to explain a complex technical concept to a non-technical stakeholder.",
-        "Tell me about your most successful project. What was your specific role and contribution?",
-        "How do you prioritize tasks when you have multiple urgent deadlines approaching?",
-        "Describe a situation where you noticed a bug or flaw in a system but it wasn't your responsibility. What did you do?",
-        "Tell me about a time you took the initiative to improve a process or system without being asked.",
-        "Where do you see your technical career heading in the next three to five years?"
-      ];
-      const randomQ = behavioralQuestions[Math.floor(Math.random() * behavioralQuestions.length)];
-      setQuestionText(randomQ);
+      const qRes = await fetch(`${BACKEND}/interview/random_behavioral`);
+      if (qRes.ok) {
+        const qData = await qRes.json();
+        setQuestionText(qData.question);
+      } else {
+        setQuestionText("Tell me about a time you faced a significant technical challenge at work or college and how you overcame it.");
+      }
+      
       setQuestionGenerated(true);
     } catch (err) {
       setError(err.message);

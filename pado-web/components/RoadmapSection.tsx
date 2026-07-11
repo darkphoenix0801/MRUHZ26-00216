@@ -218,18 +218,23 @@ export default function RoadmapSection({ user }: { user: any }) {
 
 /* ── small card component ── */
 function StepCard({ step, align }: { step: Step; align: "left" | "right" }) {
+  const searchUrl = `https://www.youtube.com/results?search_query=${encodeURIComponent(step.topic + " free tutorial")}`;
+
   return (
-    <div
-      className={`group bg-white border border-gray-100 rounded-2xl p-5 shadow-[0_2px_16px_rgba(0,0,0,0.03)] hover:shadow-[0_6px_30px_rgba(0,0,0,0.07)] transition-all duration-300 hover:-translate-y-0.5 ${
+    <a
+      href={searchUrl}
+      target="_blank"
+      rel="noopener noreferrer"
+      className={`block group bg-white border border-gray-100 rounded-2xl p-5 shadow-[0_2px_16px_rgba(0,0,0,0.03)] hover:shadow-[0_6px_30px_rgba(0,0,0,0.07)] transition-all duration-300 hover:-translate-y-0.5 hover:border-gray-300 ${
         align === "right" ? "text-right" : "text-left"
       }`}
     >
-      <p className="text-[10px] font-bold uppercase tracking-[0.15em] text-gray-400 mb-1.5">
-        {step.category}
+      <p className="text-[10px] font-bold uppercase tracking-[0.15em] text-gray-400 mb-1.5 group-hover:text-red-500 transition-colors">
+        {step.category} • Free Resource ↗
       </p>
-      <p className="text-[14px] font-semibold text-gray-800 leading-snug">
+      <p className="text-[14px] font-semibold text-gray-800 leading-snug group-hover:text-gray-900">
         {step.topic}
       </p>
-    </div>
+    </a>
   );
 }
