@@ -160,11 +160,10 @@ export default function InterviewSection({ user }: { user: any }) {
                   <button
                     key={c}
                     onClick={() => setTargetCompany(c)}
-                    className={`p-2.5 text-sm font-medium rounded-xl transition-all border ${
-                      targetCompany === c
-                        ? "bg-gray-900 text-white border-gray-900 shadow-md"
-                        : "bg-white text-gray-600 border-gray-200 hover:border-gray-400 hover:bg-gray-50"
-                    }`}
+                    className={`p-2.5 text-sm font-medium rounded-xl transition-all border ${targetCompany === c
+                      ? "bg-gray-900 text-white border-gray-900 shadow-md"
+                      : "bg-white text-gray-600 border-gray-200 hover:border-gray-400 hover:bg-gray-50"
+                      }`}
                   >
                     {c}
                   </button>
@@ -305,11 +304,10 @@ export default function InterviewSection({ user }: { user: any }) {
                 <p className="text-sm text-gray-400 mt-1">XGBoost Placement Probability</p>
               </div>
               <span
-                className={`mb-1 px-3 py-1 text-[10px] font-bold uppercase tracking-widest rounded-full ${
-                  result.probability > 65
-                    ? "bg-gray-900 text-white"
-                    : "bg-red-50 text-red-600 border border-red-100"
-                }`}
+                className={`mb-1 px-3 py-1 text-[10px] font-bold uppercase tracking-widest rounded-full ${result.probability > 65
+                  ? "bg-gray-900 text-white"
+                  : "bg-red-50 text-red-600 border border-red-100"
+                  }`}
               >
                 {result.probability > 65 ? "Ready" : "Needs Improvement"}
               </span>

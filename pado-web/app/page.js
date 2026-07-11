@@ -1,10 +1,12 @@
 import Navbar from "@/components/Navbar";
 import Hero from "@/components/Hero";
 import HowItWorks from "@/components/HowItWorks";
+import { IntroOverlay } from "@/components/CinematicIntro";
 
 export default function Home() {
   return (
     <>
+      <IntroOverlay title="PADO" subtitle="AI PLACEMENT COACH" />
       <Navbar />
       <main className="min-h-screen bg-white">
         <Hero />
