@@ -72,20 +72,35 @@ export default function AnalyticsSection({ user }: { user: any }) {
         {data && data.history.length > 0 && (
           <div className="grid md:grid-cols-3 gap-8">
             {/* Chart */}
-            <div className="md:col-span-2 bg-[#FDFDFB] border border-[#E5E3DB] rounded-2xl p-8 shadow-[0_2px_8px_rgba(0,0,0,0.02)]">
-              <p className="text-[10px] font-bold uppercase tracking-widest text-gray-400 mb-6">
-                Placement Probability
-              </p>
-              <div className="flex items-end justify-around gap-2 h-48">
+            <div className="md:col-span-2 bg-[#FDFDFB] border border-[#E5E3DB] rounded-2xl p-8 shadow-[0_2px_8px_rgba(0,0,0,0.02)] relative overflow-hidden">
+              <div className="flex justify-between items-end mb-6">
+                <p className="text-[10px] font-bold uppercase tracking-widest text-gray-400">
+                  ML Placement Probability
+                </p>
+                <div className="flex items-center gap-2">
+                  <span className="w-3 h-0.5 border-t-2 border-dashed border-green-500"></span>
+                  <span className="text-[9px] font-bold uppercase tracking-widest text-gray-400">65% Target</span>
+                </div>
+              </div>
+              
+              <div className="flex items-end justify-around gap-2 h-48 relative">
+                {/* 65% Threshold Line */}
+                <div 
+                  className="absolute left-0 right-0 border-t-2 border-dashed border-green-500/30 z-0" 
+                  style={{ bottom: `${(65 / maxProb) * 140 + 20}px` }} 
+                />
+                
                 {data.history.map((h, i) => (
                   <div 
                     key={i} 
-                    className="flex flex-col items-center gap-2"
+                    className="flex flex-col items-center gap-2 z-10"
                     style={{ animation: `scaleUp 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards ${i * 0.1}s`, transformOrigin: 'bottom', transform: 'scaleY(0)' }}
                   >
-                    <span className="text-xs font-medium text-[#3D3929]">{h.placement_probability}%</span>
+                    <span className={`text-xs font-bold ${h.placement_probability >= 65 ? "text-green-600" : "text-[#3D3929]"}`}>
+                      {h.placement_probability}%
+                    </span>
                     <div
-                      className="w-12 bg-[#3D3929] rounded-t-lg transition-all duration-700 hover:bg-[#D97757]"
+                      className={`w-12 rounded-t-lg transition-all duration-700 ${h.placement_probability >= 65 ? "bg-green-500 hover:bg-green-400" : "bg-[#3D3929] hover:bg-[#D97757]"}`}
                       style={{ height: `${(h.placement_probability / maxProb) * 140}px`, minHeight: "4px" }}
                     />
                     <span className="text-[10px] font-bold text-gray-400">W{h.week_number}</span>
@@ -110,7 +125,16 @@ export default function AnalyticsSection({ user }: { user: any }) {
                 >
                   <div className="flex justify-between items-center mb-4">
                     <span className="text-xs font-bold text-gray-400 uppercase tracking-widest">Week {h.week_number}</span>
-                    <span className="text-sm font-semibold text-[#3D3929]">{h.placement_probability}%</span>
+                    <div className="flex items-center gap-2">
+                      <span className={`px-2 py-0.5 rounded-full text-[9px] font-bold uppercase tracking-widest ${
+                        h.placement_probability >= 65 
+                          ? "bg-green-50 text-green-600 border border-green-100" 
+                          : "bg-red-50 text-red-600 border border-red-100"
+                      }`}>
+                        {h.placement_probability >= 65 ? "Ready" : "Needs Work"}
+                      </span>
+                      <span className="text-sm font-semibold text-[#3D3929]">{h.placement_probability}%</span>
+                    </div>
                   </div>
                   <div className="space-y-2">
                     {[
