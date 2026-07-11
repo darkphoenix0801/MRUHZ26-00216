@@ -15,6 +15,7 @@ export default function Hero() {
   const ctaRef = useRef(null);
   const statsRef = useRef(null);
   const badgeRef = useRef(null);
+  const heroRef = useRef(null);
 
   useEffect(() => {
     const tl = gsap.timeline({ delay: 0.2 });

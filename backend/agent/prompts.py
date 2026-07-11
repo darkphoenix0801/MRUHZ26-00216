@@ -23,7 +23,7 @@ Target company:
 {target_company}
 
 Generate a preparation roadmap across exactly these 4 categories: DSA, Aptitude, Core Subjects, Communication.
-For each category, list 3-5 specific topics the student should focus on, prioritized by relevance to {target_company}'s known interview pattern and gaps visible in the student's profile.
+For each category, list 8-10 specific topics the student should focus on, prioritized by relevance to {target_company}'s known interview pattern and gaps visible in the student's profile.
 
 Return ONLY valid JSON in this exact format:
 {{

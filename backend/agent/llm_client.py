@@ -43,6 +43,8 @@ def call_local_llm(prompt: str) -> str:
     
     try:
         response = requests.post(LM_STUDIO_URL, json=payload, headers=headers, timeout=120)
+        if response.status_code != 200:
+            print(f"LM Studio Error Response: {response.text}")
         response.raise_for_status()
         data = response.json()
         return data["choices"][0]["message"]["content"]
@@ -82,6 +84,8 @@ def call_local_llm_as_judge(prompt: str) -> str:
     
     try:
         response = requests.post(LM_STUDIO_URL, json=payload, headers=headers, timeout=120)
+        if response.status_code != 200:
+            print(f"LM Studio Error Response: {response.text}")
         response.raise_for_status()
         data = response.json()
         return data["choices"][0]["message"]["content"]

@@ -52,7 +52,7 @@ export default function HowItWorks() {
   }, []);
 
   return (
-    <section ref={sectionRef} className="py-24 px-6 border-t border-gray-100">
+    <section id="how-it-works" ref={sectionRef} className="py-24 px-6 border-t border-gray-100">
       <div className="max-w-5xl mx-auto">
         <div className="mb-16 text-center">
           <h2 className="text-4xl font-semibold tracking-tight text-gray-900" style={{ letterSpacing: "-0.02em" }}>

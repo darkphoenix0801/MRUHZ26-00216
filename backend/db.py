@@ -24,6 +24,7 @@ def init_db():
         extracted_skills TEXT,        -- JSON array/string, from LLM extraction
         cgpa             REAL,
         target_company   TEXT,
+        password_hash    TEXT,
         created_at        TIMESTAMP DEFAULT CURRENT_TIMESTAMP
     );
     """)
@@ -74,6 +75,13 @@ def init_db():
     );
     """)
     
+    
+    # Run migration to add password_hash if it doesn't exist
+    try:
+        cursor.execute("ALTER TABLE student_profile ADD COLUMN password_hash TEXT;")
+    except sqlite3.OperationalError:
+        pass # Column already exists
+        
     conn.commit()
     conn.close()
     print("✅ Database tables successfully created/validated!")
@@ -81,7 +89,7 @@ def init_db():
 
 # --- HELPER FUNCTIONS FOR INTERACTION ---
 
-def save_student_profile(student_id, name, resume_text, extracted_skills, cgpa, target_company):
+def save_student_profile(student_id, name, resume_text, extracted_skills, cgpa, target_company, password_hash=None):
     """Saves or updates a student profile."""
     conn = get_db_connection()
     cursor = conn.cursor()
@@ -90,9 +98,9 @@ def save_student_profile(student_id, name, resume_text, extracted_skills, cgpa, 
         extracted_skills = json.dumps(extracted_skills)
         
     cursor.execute("""
-    INSERT OR REPLACE INTO student_profile (student_id, name, resume_text, extracted_skills, cgpa, target_company)
-    VALUES (?, ?, ?, ?, ?, ?)
-    """, (student_id, name, resume_text, extracted_skills, cgpa, target_company))
+    INSERT OR REPLACE INTO student_profile (student_id, name, resume_text, extracted_skills, cgpa, target_company, password_hash)
+    VALUES (?, ?, ?, ?, ?, ?, ?)
+    """, (student_id, name, resume_text, extracted_skills, cgpa, target_company, password_hash))
     conn.commit()
     conn.close()
 
@@ -104,6 +112,14 @@ def get_student_profile(student_id):
     row = cursor.fetchone()
     conn.close()
     return dict(row) if row else None
+
+def clear_roadmap(student_id):
+    """Deletes all existing roadmap items for a student before regeneration."""
+    conn = get_db_connection()
+    cursor = conn.cursor()
+    cursor.execute("DELETE FROM roadmap WHERE student_id = ?", (student_id,))
+    conn.commit()
+    conn.close()
 
 def save_roadmap_item(student_id, category, topic):
     """Saves a roadmap topic recommendation."""
@@ -124,6 +140,7 @@ def get_roadmap(student_id):
     rows = cursor.fetchall()
     conn.close()
     return [dict(row) for row in rows]
+
 
 def save_interview_turn(student_id, session_id, question_number, question_text, question_category, 
                         answer_transcript=None, content_score=None, confidence_score=None, weakness_tag=None):

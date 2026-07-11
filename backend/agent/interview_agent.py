@@ -72,9 +72,16 @@ def generate_interview_question(student_id: str, session_id: str, target_company
     past_questions_list = [turn['question_text'] for turn in past_turns]
     
     # 3. Fetch Live Web Context for the target company and round
-    print(f"🔍 Fetching live web context for {target_company} {round_type} round...")
-    live_context = get_latest_interview_context(target_company, round_type)
-    print(f"✅ Web context retrieved ({len(live_context)} chars).")
+    print(f"🔍 Fetching dataset context for {target_company} {round_type} round...")
+    from backend.agent.hf_datasets import get_dataset_context
+    live_context = get_dataset_context(target_company, round_type)
+    
+    # Fallback to web scraper if dataset fails or returns empty
+    if not live_context or "No dataset data found" in live_context:
+        print(f"⚠️ Falling back to web scraper...")
+        live_context = get_latest_interview_context(target_company, round_type)
+        
+    print(f"✅ Context retrieved ({len(live_context)} chars).")
 
     # 4. Format the prompt and call the LLM
     prompt = QUESTION_GENERATION_PROMPT.format(

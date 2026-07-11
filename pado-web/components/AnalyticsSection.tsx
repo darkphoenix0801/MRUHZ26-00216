@@ -1,0 +1,144 @@
+"use client";
+import { useState, useRef, useEffect } from "react";
+import { gsap } from "gsap";
+
+const BACKEND = "http://localhost:8000";
+
+export default function AnalyticsSection({ user }: { user: any }) {
+  const [loading, setLoading] = useState(false);
+  const [data, setData] = useState(null);
+  const [error, setError] = useState("");
+
+  async function load() {
+    setError("");
+    setLoading(true);
+    try {
+      const res = await fetch(
+        `${BACKEND}/student/${user?.student_id || "demo_user"}/progress`
+      );
+      const json = await res.json();
+      if (!res.ok) throw new Error(json.detail);
+      setData(json);
+    } catch (err) {
+      setError(err.message);
+    } finally {
+      setLoading(false);
+    }
+  }
+
+  const containerRef = useRef(null);
+
+  useEffect(() => {
+    gsap.fromTo(
+      containerRef.current,
+      { y: 20, opacity: 0 },
+      { y: 0, opacity: 1, duration: 0.6, ease: "power2.out" }
+    );
+  }, []);
+
+  const maxProb = data ? Math.max(...data.history.map((h) => h.placement_probability), 1) : 100;
+
+  return (
+    <div ref={containerRef} className="w-full">
+      <div className="max-w-5xl mx-auto">
+        <div className="mb-10 text-center">
+          <h2 className="text-3xl font-semibold tracking-tight text-gray-900 font-serif" style={{ letterSpacing: "-0.01em" }}>
+            Progress Analytics
+          </h2>
+          <p className="text-sm text-gray-500 mt-2 max-w-xl mx-auto leading-relaxed">
+            Track how your placement probability evolves over multiple practice sessions.
+          </p>
+        </div>
+
+        {/* Controls */}
+        <div className="flex justify-center mb-10">
+          <button
+            onClick={load}
+            disabled={loading || !user?.student_id}
+            className="px-8 py-3 bg-[#3D3929] text-white text-sm font-medium rounded-xl hover:bg-[#2A271C] disabled:bg-[#E5E3DB] disabled:text-gray-400 disabled:cursor-not-allowed transition-all duration-200 shadow-sm"
+          >
+            {loading ? "Loading…" : "Refresh Data"}
+          </button>
+        </div>
+
+        {error && <p className="text-sm text-red-500 text-center mb-6">{error}</p>}
+
+        {data && data.history.length === 0 && (
+          <div className="text-center py-16 border border-dashed border-[#E5E3DB] bg-[#FDFDFB] rounded-2xl">
+            <p className="text-sm text-gray-400">No interview sessions recorded yet.</p>
+          </div>
+        )}
+
+        {data && data.history.length > 0 && (
+          <div className="grid md:grid-cols-3 gap-8">
+            {/* Chart */}
+            <div className="md:col-span-2 bg-[#FDFDFB] border border-[#E5E3DB] rounded-2xl p-8 shadow-[0_2px_8px_rgba(0,0,0,0.02)]">
+              <p className="text-[10px] font-bold uppercase tracking-widest text-gray-400 mb-6">
+                Placement Probability
+              </p>
+              <div className="flex items-end justify-around gap-2 h-48">
+                {data.history.map((h, i) => (
+                  <div 
+                    key={i} 
+                    className="flex flex-col items-center gap-2"
+                    style={{ animation: `scaleUp 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards ${i * 0.1}s`, transformOrigin: 'bottom', transform: 'scaleY(0)' }}
+                  >
+                    <span className="text-xs font-medium text-[#3D3929]">{h.placement_probability}%</span>
+                    <div
+                      className="w-12 bg-[#3D3929] rounded-t-lg transition-all duration-700 hover:bg-[#D97757]"
+                      style={{ height: `${(h.placement_probability / maxProb) * 140}px`, minHeight: "4px" }}
+                    />
+                    <span className="text-[10px] font-bold text-gray-400">W{h.week_number}</span>
+                  </div>
+                ))}
+              </div>
+              <style jsx>{`
+                @keyframes scaleUp {
+                  to { transform: scaleY(1); }
+                }
+              `}</style>
+            </div>
+
+            {/* Log */}
+            <div className="space-y-4">
+              <p className="text-[10px] font-bold uppercase tracking-widest text-gray-400">Session Log</p>
+              {[...data.history].reverse().map((h, i) => (
+                <div 
+                  key={i} 
+                  className="bg-white border border-[#E5E3DB] rounded-xl p-5 shadow-[0_2px_8px_rgba(0,0,0,0.02)]"
+                  style={{ animation: `fadeInUp 0.4s ease forwards ${i * 0.1}s`, opacity: 0, transform: 'translateY(10px)' }}
+                >
+                  <div className="flex justify-between items-center mb-4">
+                    <span className="text-xs font-bold text-gray-400 uppercase tracking-widest">Week {h.week_number}</span>
+                    <span className="text-sm font-semibold text-[#3D3929]">{h.placement_probability}%</span>
+                  </div>
+                  <div className="space-y-2">
+                    {[
+                      { label: "DSA", val: h.dsa_score },
+                      { label: "Aptitude", val: h.aptitude_score },
+                      { label: "Comms", val: h.communication_score },
+                    ].map((m) => (
+                      <div key={m.label} className="flex items-center gap-3">
+                        <span className="text-[10px] font-medium text-gray-500 w-12 uppercase">{m.label}</span>
+                        <div className="flex-1 h-0.5 bg-[#E5E3DB] rounded-full">
+                          <div className="h-0.5 bg-[#3D3929] rounded-full" style={{ width: `${m.val}%` }} />
+                        </div>
+                        <span className="text-[10px] font-medium text-gray-500">{Math.round(m.val)}</span>
+                      </div>
+                    ))}
+                  </div>
+                  <p className="text-[10px] text-gray-400 mt-4 text-right">{new Date(h.recorded_at).toLocaleDateString()}</p>
+                </div>
+              ))}
+              <style jsx>{`
+                @keyframes fadeInUp {
+                  to { opacity: 1; transform: translateY(0); }
+                }
+              `}</style>
+            </div>
+          </div>
+        )}
+      </div>
+    </div>
+  );
+}

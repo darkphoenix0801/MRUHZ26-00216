@@ -15,6 +15,7 @@ from backend.db import (
     save_student_profile,
     get_student_profile,
     save_roadmap_item,
+    clear_roadmap,
     get_roadmap,
     save_weekly_progress,
     get_weekly_progress,
@@ -58,10 +59,16 @@ class StudentRegistration(BaseModel):
     resume_text: str
     cgpa: float
     target_company: str
+    password: Optional[str] = None
+
+class StudentLogin(BaseModel):
+    student_id: str
+    password: str
 
 class StartInterviewRequest(BaseModel):
     student_id: str
     session_id: str
+    target_company: Optional[str] = None
 
 class SubmitAnswerRequest(BaseModel):
     student_id: str
@@ -70,6 +77,7 @@ class SubmitAnswerRequest(BaseModel):
     question_text: str
     category: str
     answer_text: str
+    target_company: Optional[str] = None
 
 # Load the model once when the server starts, not on every request!
 MODEL_PATH = "backend/ml/placement_model.pkl"
@@ -87,6 +95,10 @@ def load_model():
         print(f"✅ Successfully loaded tuned XGBoost model from {absolute_model_path}")
     else:
         print(f"⚠️ Warning: Model file not found at {absolute_model_path}")
+        
+    from backend.agent.hf_datasets import preload_datasets
+    print("⏳ Starting Hugging Face dataset background preloading...")
+    preload_datasets()
 
 # Helper: compute placement probability inside FastAPI internally
 def calculate_placement_probability_internal(cgpa: float, dsa: float, aptitude: float, comms: float, interview: float) -> float:
@@ -125,7 +137,30 @@ def predict_placement(features: StudentFeatures):
 def register_student(student: StudentRegistration):
     try:
         print(f"📝 Starting registration for student: {student.student_id}")
-        extracted_data = extract_skills_from_resume(student.resume_text)
+        
+        if student.resume_text == "N/A" or not student.resume_text.strip():
+            extracted_data = {"skills": ["Python", "Data Structures", "Algorithms"]}
+            roadmap_data = {
+                "DSA": ["Arrays & Hashing", "Two Pointers", "Trees"],
+                "Aptitude": ["Quantitative Analysis", "Logical Reasoning"],
+                "Core Subjects": ["Operating Systems", "DBMS"],
+                "Communication": ["Behavioral Interviews"]
+            }
+        else:
+            extracted_data = extract_skills_from_resume(student.resume_text)
+            roadmap_data = generate_roadmap_from_skills(
+                extracted_skills_json=json.dumps(extracted_data),
+                target_company=student.target_company
+            )
+        
+        # Store password as plain text (as requested by user)
+        # If no password is provided (e.g., from Roadmap generation), fetch the existing one
+        if student.password:
+            password_hash = student.password
+        else:
+            existing_profile = get_student_profile(student.student_id)
+            password_hash = existing_profile.get("password_hash") if existing_profile else "password123"
+        
         
         save_student_profile(
             student_id=student.student_id,
@@ -133,13 +168,12 @@ def register_student(student: StudentRegistration):
             resume_text=student.resume_text,
             extracted_skills=extracted_data.get("skills", []),
             cgpa=student.cgpa,
-            target_company=student.target_company
+            target_company=student.target_company,
+            password_hash=password_hash
         )
         
-        roadmap_data = generate_roadmap_from_skills(
-            extracted_skills_json=json.dumps(extracted_data),
-            target_company=student.target_company
-        )
+        # Clear old roadmap before inserting new one
+        clear_roadmap(student.student_id)
         
         for category, topics in roadmap_data.items():
             for topic in topics:
@@ -163,11 +197,41 @@ def register_student(student: StudentRegistration):
         print(f"❌ Error registering student: {e}")
         raise HTTPException(status_code=500, detail=f"Failed to register student: {str(e)}")
 
+@app.post("/student/login")
+def login_student(login_data: StudentLogin):
+    try:
+        profile = get_student_profile(login_data.student_id)
+        if not profile:
+            raise HTTPException(status_code=404, detail="Student ID not found")
+        
+        # Verify password (plain text)
+        if not profile.get("password_hash"):
+            raise HTTPException(status_code=400, detail="User has no password set. Please re-register.")
+            
+        if profile["password_hash"] != login_data.password:
+            raise HTTPException(status_code=401, detail="Invalid password")
+            
+        return {
+            "status": "success",
+            "message": "Login successful",
+            "student_id": profile["student_id"],
+            "name": profile["name"],
+            "target_company": profile["target_company"]
+        }
+    except HTTPException:
+        raise
+    except Exception as e:
+        print(f"Error in login: {str(e)}")
+        raise HTTPException(status_code=500, detail=str(e))
+
 @app.get("/student/{student_id}")
 def get_student(student_id: str):
     profile = get_student_profile(student_id)
     if not profile:
         raise HTTPException(status_code=404, detail="Student profile not found.")
+    
+    # Do not expose password to frontend
+    profile.pop("password_hash", None)
     return profile
 
 # 5. Retrieve Study Roadmap (DB Endpoint)
@@ -179,17 +243,13 @@ def get_student_roadmap(student_id: str):
         
     db_roadmap = get_roadmap(student_id)
     
-    structured_roadmap = {
-        "DSA": [],
-        "Aptitude": [],
-        "Core Subjects": [],
-        "Communication": []
-    }
+    structured_roadmap = {}
     
     for item in db_roadmap:
         cat = item["category"]
-        if cat in structured_roadmap:
-            structured_roadmap[cat].append(item["topic"])
+        if cat not in structured_roadmap:
+            structured_roadmap[cat] = []
+        structured_roadmap[cat].append(item["topic"])
             
     return {
         "student_id": student_id,
@@ -206,15 +266,16 @@ def start_interview(request: StartInterviewRequest):
         raise HTTPException(status_code=404, detail="Student profile not found. Please register first.")
         
     try:
+        company = request.target_company or profile["target_company"]
         # Generate the very first question (question_number = 1)
         question_text, category = generate_interview_question(
             student_id=request.student_id,
             session_id=request.session_id,
-            target_company=profile["target_company"]
+            target_company=company
         )
         
         from backend.agent.company_kb import get_company_loop
-        company_loop = get_company_loop(profile["target_company"])
+        company_loop = get_company_loop(company)
         
         return {
             "session_id": request.session_id,
@@ -234,6 +295,7 @@ def submit_answer(request: SubmitAnswerRequest):
         raise HTTPException(status_code=404, detail="Student profile not found.")
         
     try:
+        company = request.target_company or profile["target_company"]
         # A. Score current answer and save to SQLite
         turn_result = score_and_store_turn(
             student_id=request.student_id,
@@ -246,7 +308,7 @@ def submit_answer(request: SubmitAnswerRequest):
         
         # We determine total questions based on company loop rounds.
         from backend.agent.company_kb import get_company_loop
-        company_loop = get_company_loop(profile["target_company"])
+        company_loop = get_company_loop(company)
         MAX_QUESTIONS = company_loop["rounds"]
         
         if request.question_number < MAX_QUESTIONS:
@@ -254,7 +316,7 @@ def submit_answer(request: SubmitAnswerRequest):
             next_q, next_cat = generate_interview_question(
                 student_id=request.student_id,
                 session_id=request.session_id,
-                target_company=profile["target_company"],
+                target_company=company,
                 question_number=request.question_number + 1
             )
             
@@ -329,6 +391,7 @@ async def submit_answer_audio(
     question_number: int = Form(...),
     question_text: str = Form(...),
     category: str = Form(...),
+    target_company: str = Form(None),
     audio_file: UploadFile = File(...)
 ):
     profile = get_student_profile(student_id)
@@ -336,6 +399,7 @@ async def submit_answer_audio(
         raise HTTPException(status_code=404, detail="Student profile not found.")
 
     try:
+        company = target_company or profile["target_company"]
         # Save uploaded file to a temporary file
         fd, temp_path = tempfile.mkstemp(suffix=".wav")
         try:
@@ -366,14 +430,14 @@ async def submit_answer_audio(
         
         # B. We determine total questions based on company loop rounds.
         from backend.agent.company_kb import get_company_loop
-        company_loop = get_company_loop(profile["target_company"])
+        company_loop = get_company_loop(company)
         MAX_QUESTIONS = company_loop["rounds"]
         
         if question_number < MAX_QUESTIONS:
             next_q, next_cat = generate_interview_question(
                 student_id=student_id,
                 session_id=session_id,
-                target_company=profile["target_company"],
+                target_company=company,
                 question_number=question_number + 1
             )
             

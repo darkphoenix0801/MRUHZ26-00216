@@ -6,25 +6,61 @@ import Navbar from "@/components/Navbar";
 export default function AuthPage() {
   const router = useRouter();
   const [isLogin, setIsLogin] = useState(true);
+  const [error, setError] = useState("");
+  const [loading, setLoading] = useState(false);
   const [form, setForm] = useState({
     student_id: "",
     name: "",
+    password: "",
   });
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    if (!form.student_id) return;
+    if (!form.student_id || !form.password) return;
     
-    // In a real app, this would be an API call to authenticate.
-    // For this local app, we simply save to localStorage.
-    localStorage.setItem(
-      "pado_user",
-      JSON.stringify({
-        student_id: form.student_id,
-        name: form.name || "Student",
-      })
-    );
-    router.push("/dashboard");
+    setError("");
+    setLoading(true);
+
+    try {
+      const endpoint = isLogin ? "/student/login" : "/student/register";
+      
+      const payload = isLogin 
+        ? { student_id: form.student_id, password: form.password }
+        : { 
+            student_id: form.student_id, 
+            name: form.name || "Student",
+            password: form.password,
+            resume_text: "N/A",
+            cgpa: 0,
+            target_company: "Any"
+          };
+
+      const res = await fetch(`http://localhost:8000${endpoint}`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(payload),
+      });
+
+      if (!res.ok) {
+        const errorData = await res.json();
+        throw new Error(errorData.detail || "Authentication failed");
+      }
+
+      const data = await res.json();
+      
+      localStorage.setItem(
+        "pado_user",
+        JSON.stringify({
+          student_id: form.student_id,
+          name: form.name || data.name || "Student",
+        })
+      );
+      router.push("/dashboard");
+    } catch (err) {
+      setError(err.message);
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -80,9 +116,28 @@ export default function AuthPage() {
               </div>
             )}
 
+            <div>
+              <label className="block text-xs font-medium text-gray-500 mb-1.5">
+                Password
+              </label>
+              <input
+                required
+                type="password"
+                className="w-full px-3.5 py-2.5 text-sm border border-gray-200 rounded-xl bg-white focus:outline-none focus:ring-2 focus:ring-gray-900 transition-all"
+                placeholder="••••••••"
+                value={form.password}
+                onChange={(e) =>
+                  setForm({ ...form, password: e.target.value })
+                }
+              />
+            </div>
+
+            {error && <p className="text-red-500 text-xs mt-2">{error}</p>}
+
             <button
               type="submit"
-              className="w-full py-3 mt-2 bg-black text-white text-sm font-medium rounded-xl hover:bg-gray-800 transition-all"
+              disabled={loading}
+              className="w-full py-3 mt-2 bg-black text-white text-sm font-medium rounded-xl hover:bg-gray-800 transition-all disabled:opacity-50"
             >
               {isLogin ? "Log in" : "Sign up"}
             </button>

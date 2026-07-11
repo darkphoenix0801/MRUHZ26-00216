@@ -4,7 +4,7 @@ import { gsap } from "gsap";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 
-export default function Navbar() {
+export default function Navbar({ activeTab, setActiveTab }) {
   const navRef = useRef(null);
   const router = useRouter();
   const [user, setUser] = useState(null);
@@ -32,8 +32,24 @@ export default function Navbar() {
   const handleSignOut = () => {
     localStorage.removeItem("pado_user");
     setUser(null);
-    router.push("/");
+    window.location.href = "/";
   };
+
+  if (!mounted) {
+    return (
+      <nav ref={navRef} className="fixed top-0 left-0 right-0 z-50 flex items-center justify-between px-8 py-4 bg-white/50 backdrop-blur-xl border-b border-gray-100 transition-all">
+        {/* Logo */}
+        <div className="flex items-center gap-2">
+          <div className="w-7 h-7 rounded-lg bg-black flex items-center justify-center">
+            <span className="text-white text-xs font-bold tracking-tight">P</span>
+          </div>
+          <span className="text-sm font-semibold tracking-tight text-gray-900">
+            PADO
+          </span>
+        </div>
+      </nav>
+    );
+  }
 
   return (
     <nav
@@ -60,7 +76,25 @@ export default function Navbar() {
             How it works
           </Link>
         )}
-        {user && (
+        {user && typeof setActiveTab === "function" ? (
+          <div className="flex items-center gap-6">
+            {["Register", "Interview", "Analytics", "Audio"].map((tab) => (
+              <button
+                key={tab}
+                onClick={() => setActiveTab(tab)}
+                className={`text-sm font-medium transition-all duration-200 ${
+                  activeTab === tab 
+                    ? "text-gray-900 border-b-2 border-gray-900 pb-1" 
+                    : "text-gray-500 hover:text-gray-900"
+                }`}
+              >
+                {tab}
+              </button>
+            ))}
+            <span className="text-sm text-gray-300 ml-2">|</span>
+            <span className="text-sm text-gray-500">Hi, {user.name}</span>
+          </div>
+        ) : user ? (
           <>
             <Link
               href="/dashboard"
@@ -71,12 +105,12 @@ export default function Navbar() {
             <span className="text-sm text-gray-300">|</span>
             <span className="text-sm text-gray-500">Hi, {user.name}</span>
           </>
-        )}
+        ) : null}
       </div>
 
       {/* CTA */}
       <div className="flex items-center gap-4">
-        {mounted && !user && (
+        {!user && (
           <>
             <Link
               href="/auth"
@@ -92,7 +126,7 @@ export default function Navbar() {
             </Link>
           </>
         )}
-        {mounted && user && (
+        {user && (
           <button
             onClick={handleSignOut}
             className="text-sm font-medium bg-gray-100 text-gray-700 px-5 py-2 rounded-full hover:bg-gray-200 transition-all duration-200"
