@@ -7,7 +7,7 @@ This document defines the tasks, timeline, and merge integration points for the 
 
 ## 👥 Role Breakdown
 
-*   **You (Dev 1 - ML & Analytics Lead):** Focuses on dataset creation, XGBoost model training, hyperparameter tuning, testing, and wrapping the ML model in a FastAPI endpoint.
+*   **You (Dev 1 - ML & Analytics Lead):** Focuses on dataset creation, hyperparametered XGBoost model training, hyperparameter tuning, testing, and wrapping the ML model in a FastAPI endpoint.
 *   **Your Teammate (Dev 2 - Agent & Full Stack Lead):** Focuses on SQLite database schema, FastAPI server scaffolding, the core Adaptive Agent loop, LLM prompts, Whisper/librosa audio, and the Streamlit frontend.
 
 ---

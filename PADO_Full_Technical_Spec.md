@@ -132,7 +132,7 @@ CREATE TABLE weekly_progress (
     dsa_score              REAL,
     aptitude_score          REAL,
     communication_score      REAL,
-    placement_probability    REAL,  -- output from the tuned XGBoost model
+    placement_probability    REAL,  -- output from the tuned hyperparametered XGBoost model
     recorded_at             TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     FOREIGN KEY (student_id) REFERENCES student_profile(student_id)
 );
@@ -335,7 +335,7 @@ joblib.dump(best_model, 'placement_model.pkl')
 | POST | `/interview/start` | Creates new `session_id`, returns first question |
 | POST | `/interview/answer` | Accepts audio file, runs transcribe → score → store → decide next question, returns next question + running feedback |
 | GET | `/interview/summary/{session_id}` | Returns final recommendation using prompt 7.5 |
-| POST | `/predict/placement_probability` | Wraps the tuned XGBoost model |
+| POST | `/predict/placement_probability` | Wraps the tuned hyperparametered XGBoost model |
 | GET | `/dashboard/{student_id}` | Returns weekly_progress rows + interview_sessions aggregates for the UI |
 
 ---

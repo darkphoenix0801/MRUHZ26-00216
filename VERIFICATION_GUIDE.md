@@ -63,7 +63,7 @@ We built the core ML and API service in three distinct phases. Below is the deta
 ---
 
 ### 🌐 Phase 3: FastAPI Serving Endpoint (`backend/main.py`)
-*   **What we did:** We built a local REST API that hosts the trained XGBoost model and listens for requests.
+*   **What we did:** We built a local REST API that hosts the hyperparametered XGBoost model and listens for requests.
 *   **How we did it:** We used `FastAPI` to create a `POST /predict/placement_probability` endpoint. The server loads the `.pkl` file into RAM when starting. When it receives a student's scores, it validation-checks it with `Pydantic`, wraps it in a Pandas DataFrame, and runs `model.predict_proba()`, returning a clean percentage.
 *   **Why we did it:** Your teammate's frontend (Streamlit) cannot read raw Python code files directly. By running a FastAPI server, we created a standard bridge. The frontend can simply send a web request and immediately get back the placement probability.
 
@@ -127,7 +127,7 @@ python3 data/generate_synthetic_data.py
 `✅ Generated 1000 records and saved to data/synthetic_placement_data.csv`
 
 ### Step 3: Run the Hyperparameter Tuning & Model Training
-Train the XGBoost model and save the optimized binary file:
+Train the hyperparametered XGBoost model and save the optimized binary file:
 ```bash
 python3 backend/ml/train_model.py
 ```
@@ -144,7 +144,7 @@ uvicorn backend.main:app --reload
 ```text
 INFO:     Started server process [PID]
 INFO:     Waiting for application startup.
-✅ Successfully loaded tuned XGBoost model from backend/ml/placement_model.pkl
+✅ Successfully loaded tuned hyperparametered XGBoost model from backend/ml/placement_model.pkl
 INFO:     Application startup complete.
 INFO:     Uvicorn running on http://127.0.0.1:8000 (Press CTRL+C to quit)
 ```

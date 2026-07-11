@@ -7,7 +7,7 @@
 2. Generating a highly personalized roadmap.
 3. Conducting realistic mock interviews (both text and audio) using dynamic datasets.
 4. Evaluating answers using strict AI judging.
-5. Predicting the student's final placement probability using a trained Machine Learning model.
+5. Predicting the student's final placement probability using a hyperparametered XGBoost ML model.
 
 ---
 
@@ -27,7 +27,7 @@
 - **Running Via**: `uvicorn backend.main:app --reload` (Port 8000).
 
 ### **AI & Machine Learning (The Brain)**
-1. **Local LLM (LM Studio)**: Serves as the primary intelligence. It extracts skills, generates the roadmaps, formulates questions, and acts as a strict judge to grade answers.
+1. **hyperparametered local LLM (LM Studio)**: Serves as the primary intelligence. It extracts skills, generates the roadmaps, formulates questions, and acts as a strict judge to grade answers.
 2. **Hugging Face Datasets**: Used to ground the AI in reality so it doesn't hallucinate questions.
    - *Technical*: `kaysss/leetcode-problem-solutions`
    - *Behavioral*: `Aiman1234/Interview-questions`
@@ -46,7 +46,7 @@ The frontend and backend communicate exclusively via RESTful APIs. Here is the s
 1. **User Action**: The user fills out their details, target company, and pastes their resume in the frontend setup page.
 2. **API Call**: `POST /student/register`
 3. **Backend Process**:
-   - The FastAPI backend forwards the resume text to the **Local LLM**.
+   - The FastAPI backend forwards the resume text to the **hyperparametered local LLM**.
    - The LLM extracts the student's core skills and identifies weaknesses based on the target company.
    - The LLM dynamically generates a 4-category roadmap (DSA, Aptitude, Core Subjects, Communication).
    - The backend saves the user profile and roadmap into the **SQLite** database (`student_profile` and `roadmap` tables).
@@ -58,11 +58,11 @@ The frontend and backend communicate exclusively via RESTful APIs. Here is the s
 3. **Backend Process**:
    - The backend looks at the current round type (e.g., "DSA" or "Behavioral").
    - It securely fetches a random real-world question from the **Hugging Face Datasets** loaded in memory.
-   - It sends that dataset question to the **Local LLM** to format it as if an interviewer at "Google" is asking it.
+   - It sends that dataset question to the **hyperparametered local LLM** to format it as if an interviewer at "Google" is asking it.
 4. **API Call**: `POST /interview/answer`
 5. **Backend Process**:
    - The user submits their text answer.
-   - The backend sends the question and the user's answer to the **Local LLM**, instructing it to act as a "STRICT judge".
+   - The backend sends the question and the user's answer to the **hyperparametered local LLM**, instructing it to act as a "STRICT judge".
    - The LLM returns a JSON object containing a `content_score` (0-100), `feedback`, and `weakness_tag`.
    - The interaction is saved to the `interview_sessions` table in SQLite.
 
@@ -76,7 +76,7 @@ The frontend and backend communicate exclusively via RESTful APIs. Here is the s
    - The file is temporarily saved.
    - **Librosa** analyzes the file's decibel levels, zero-crossing rate, and calculates how much the user was actually speaking vs pausing. This generates a `Confidence Score`.
    - **Whisper** transcribes the spoken words into text.
-   - The text is passed to the **Local LLM** to generate a `Content Score` and feedback.
+   - The text is passed to the **hyperparametered local LLM** to generate a `Content Score` and feedback.
    - Everything is merged and returned to the frontend.
 
 ### **Phase 4: ML Analytics & Prediction**
@@ -96,7 +96,7 @@ The frontend and backend communicate exclusively via RESTful APIs. Here is the s
 1. **`student_profile`**: Stores basic info, hashed passwords, CGPA, target company, and JSON-stringified extracted skills.
 2. **`roadmap`**: Stores individual milestones mapped to a specific `student_id`.
 3. **`interview_sessions`**: The history log of every single question asked, the answer given, the LLM feedback, the weakness tag, and the confidence/content scores.
-4. **`weekly_progress`**: Stores the aggregated metrics and the final output of the XGBoost ML model for historical tracking.
+4. **`weekly_progress`**: Stores the aggregated metrics and the final output of the hyperparametered XGBoost ML model for historical tracking.
 
 ---
 
@@ -104,6 +104,6 @@ The frontend and backend communicate exclusively via RESTful APIs. Here is the s
 Everything runs locally on your machine for maximum privacy and speed:
 - **Node.js** runs the Next.js frontend.
 - **Python (Uvicorn)** runs the FastAPI backend.
-- **LM Studio** runs the local LLM on port 1234.
+- **LM Studio** runs the hyperparametered local LLM on port 1234.
 - **Hugging Face** datasets are cached locally.
 - **Whisper/Librosa/XGBoost** execute directly inside the Python environment using your machine's CPU/GPU.
