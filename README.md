@@ -9,9 +9,9 @@ Welcome to the **PADO** repository! PADO is a complete, end-to-end AI placement 
 
 ## 🧠 Core AI Technologies Used
 
-We heavily emphasize local, privacy-first, and highly optimized models. Our entire ecosystem is driven by:
+We heavily emphasize privacy-first and highly optimized models. Our entire ecosystem is driven by:
 
-1. **Hyperparametered local LLM**: We use a highly optimized, hyperparametered local LLM to orchestrate the personalized interview process, parse resumes, extract skills, and generate personalized weekly study roadmaps. This ensures zero data leakage, complete privacy, and no reliance on expensive external API endpoints.
+1. **API-Based LLM (Groq / Gemini)**: We use highly optimized cloud LLMs via free-tier APIs to orchestrate the personalized interview process, parse resumes, extract skills, and generate personalized weekly study roadmaps. This ensures high speed and accuracy without the need for expensive local GPU compute.
 2. **Hyperparametered XGBoost ML Model**: We do not rely on basic heuristics. Instead, we use a sophisticated, hyperparametered XGBoost ML model (`placement_model.pkl`) to predict a student's exact placement probability (0-100%) based on their academic and interview performance metrics (DSA, Aptitude, Communication, CGPA). This model is hyperparameter-tuned locally using `RandomizedSearchCV` for maximum accuracy.
 
 ---
@@ -28,8 +28,8 @@ PADO is split into two primary components:
 ### 2. ⚙️ Backend (`backend/`)
 - Powered by **FastAPI** (Python).
 - Hosts the **hyperparametered XGBoost ML model** for real-time placement probability predictions.
-- Orchestrates the **hyperparametered local LLM** for resume parsing, roadmap generation, and mock interviews.
-- Processes audio using **Whisper** for transcription and **Librosa** for voice confidence measurement.
+- Orchestrates the **Groq/Gemini LLMs** for resume parsing, roadmap generation, and mock interviews.
+- Processes audio using **Groq Whisper API** for transcription and **Librosa** for voice confidence measurement.
 
 ---
 
@@ -38,11 +38,19 @@ PADO is split into two primary components:
 ### Prerequisites
 - Node.js (v18+)
 - Python 3.9+
-- LM Studio (for running the hyperparametered local LLM)
+- Groq API Key (and optionally Gemini API Key) for LLM and Whisper features
 
 ### Running the Project
 
-**1. Start the Backend:**
+**1. Set up the Backend Environment:**
+Create a `.env` file in the `backend/` directory with your API keys:
+```env
+GROQ_API_KEY=your_groq_api_key_here
+GEMINI_API_KEY=your_gemini_api_key_here
+USE_GEMINI_FALLBACK=true
+```
+
+**2. Start the Backend:**
 ```bash
 cd backend
 python3 -m venv venv
@@ -51,7 +59,7 @@ pip install -r requirements.txt
 uvicorn main:app --reload --port 8000
 ```
 
-**2. Start the Frontend:**
+**3. Start the Frontend:**
 ```bash
 cd pado-web
 npm install

@@ -1,72 +1,89 @@
 "use client";
-import { useEffect, useRef } from "react";
-import { gsap } from "gsap";
 
-const steps = [
-  {
-    number: "01",
-    title: "Upload Resume",
-    description: "Drop your PDF or DOCX. The local Llama model extracts your skills, experience, and gaps — no data sent to the cloud.",
-  },
-  {
-    number: "02",
-    title: "Get Your Roadmap",
-    description: "Receive a tailored preparation plan across DSA, Aptitude, Core Subjects, and Communication — customized for your target company.",
-  },
-  {
-    number: "03",
-    title: "Practice Adaptively",
-    description: "Start a mock interview. The AI agent inspects your session memory and dynamically pivots to drill down on weak topics.",
-  },
-  {
-    number: "04",
-    title: "Track Progress",
-    description: "After each session, your XGBoost model predicts your real placement probability and logs it to your weekly analytics dashboard.",
-  },
-];
+import React, { useRef, useEffect } from "react";
+import gsap from "gsap";
+import { ScrollTrigger } from "gsap/ScrollTrigger";
+import { Target, MessageSquare, LineChart, FileText } from "lucide-react";
+
+gsap.registerPlugin(ScrollTrigger);
 
 export default function HowItWorks() {
   const sectionRef = useRef(null);
+  const cardsRef = useRef(null);
 
   useEffect(() => {
-    const cards = sectionRef.current?.querySelectorAll(".step-card");
-    if (!cards) return;
-
-    const observer = new IntersectionObserver(
-      (entries) => {
-        entries.forEach((entry) => {
-          if (entry.isIntersecting) {
-            gsap.to(entry.target, { y: 0, opacity: 1, duration: 0.5, ease: "power2.out" });
-          }
-        });
-      },
-      { threshold: 0.2 }
-    );
-
-    cards.forEach((c) => {
-      gsap.set(c, { y: 30, opacity: 0 });
-      observer.observe(c);
-    });
-
-    return () => observer.disconnect();
+    const ctx = gsap.context(() => {
+      gsap.from(cardsRef.current.children, {
+        y: 60,
+        opacity: 0,
+        duration: 0.8,
+        stagger: 0.2,
+        ease: "back.out(1.2)",
+        scrollTrigger: {
+          trigger: sectionRef.current,
+          start: "top 70%",
+        }
+      });
+    }, sectionRef);
+    return () => ctx.revert();
   }, []);
 
+  const steps = [
+    {
+      icon: <FileText className="text-blue-400" size={24} />,
+      bg: "bg-blue-500/10 border-blue-500/20",
+      title: "1. Resume Parsing",
+      desc: "Upload your resume. The LLM extracts your exact tech stack to build a personalized profile instantly."
+    },
+    {
+      icon: <Target className="text-indigo-400" size={24} />,
+      bg: "bg-indigo-500/10 border-indigo-500/20",
+      title: "2. Dynamic Roadmap",
+      desc: "Receive a tailored week-by-week preparation plan focusing on the algorithms and frameworks you need."
+    },
+    {
+      icon: <MessageSquare className="text-purple-400" size={24} />,
+      bg: "bg-purple-500/10 border-purple-500/20",
+      title: "3. Adaptive Interviews",
+      desc: "Engage in cinematic mock interviews. The AI pivots questions based on real-time performance."
+    },
+    {
+      icon: <LineChart className="text-emerald-400" size={24} />,
+      bg: "bg-emerald-500/10 border-emerald-500/20",
+      title: "4. ML Predictions",
+      desc: "An XGBoost model calculates your real-time placement probability (0-100%) based on comprehensive metrics."
+    }
+  ];
+
   return (
-    <section id="how-it-works" ref={sectionRef} className="py-24 px-6 border-t border-gray-100">
-      <div className="max-w-5xl mx-auto">
-        <div className="mb-16 text-center">
-          <h2 className="text-4xl font-semibold tracking-tight text-gray-900" style={{ letterSpacing: "-0.02em" }}>
-            How PADO Works
+    <section id="how-it-works" ref={sectionRef} className="py-32 relative bg-black">
+      <div className="absolute inset-0 bg-gradient-to-b from-black via-zinc-950 to-black z-0"></div>
+      
+      <div className="container mx-auto px-6 relative z-10 max-w-6xl">
+        <div className="text-center mb-20">
+          <h2 className="text-4xl md:text-5xl font-bold mb-6 text-white">
+            The <span className="text-gradient">End-to-End</span> Pipeline
           </h2>
-          <p className="text-gray-400 mt-3">Four steps. Zero cloud dependency.</p>
+          <p className="text-gray-400 max-w-2xl mx-auto text-lg">
+            We don't do static question banks. PADO builds a real-time, personalized ecosystem tailored precisely to your background.
+          </p>
         </div>
 
-        <div className="grid md:grid-cols-4 gap-px bg-gray-100 border border-gray-100 rounded-2xl overflow-hidden">
-          {steps.map((s) => (
-            <div key={s.number} className="step-card bg-white p-7">
-              <p className="text-3xl font-light text-gray-200 mb-4 tracking-tight">{s.number}</p>
-              <p className="text-sm font-semibold text-gray-900 mb-2">{s.title}</p>
-              <p className="text-xs text-gray-400 leading-relaxed">{s.description}</p>
+        <div ref={cardsRef} className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+          {steps.map((step, idx) => (
+            <div 
+              key={idx} 
+              className="group glass-card rounded-3xl p-8 transition-all duration-300 hover:scale-[1.02] hover:-translate-y-2 hover:shadow-[0_20px_40px_rgba(0,0,0,0.5)] hover:border-white/20 relative overflow-hidden"
+            >
+              <div className="absolute top-0 right-0 w-32 h-32 bg-white/5 rounded-full blur-3xl group-hover:bg-white/10 transition-colors"></div>
+              
+              <div className={`w-14 h-14 rounded-2xl flex items-center justify-center mb-6 border ${step.bg}`}>
+                {step.icon}
+              </div>
+              <h3 className="text-xl font-bold text-white mb-3">{step.title}</h3>
+              <p className="text-sm text-gray-400 leading-relaxed font-medium">
+                {step.desc}
+              </p>
             </div>
           ))}
         </div>

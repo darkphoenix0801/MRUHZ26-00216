@@ -1,3 +1,16 @@
+fastapi
+uvicorn
+pydantic
+python-multipart
+joblib
+pandas
+xgboost
+scikit-learn
 datasets
 passlib
 bcrypt
+librosa
+soundfile
+python-dotenv
+groq
+google-genai

@@ -8,18 +8,19 @@ export default function Home() {
     <>
       <IntroOverlay title="PADO" subtitle="AI PLACEMENT COACH" />
       <Navbar />
-      <main className="min-h-screen bg-white">
+      <main className="min-h-screen bg-black text-white selection:bg-blue-500/30 selection:text-white overflow-hidden">
         <Hero />
         <HowItWorks />
       </main>
       
-      {/* Minimal Footer */}
-      <footer className="border-t border-gray-100 py-12 text-center mt-20 bg-gray-50/50">
-        <div className="w-7 h-7 mx-auto rounded-lg bg-black flex items-center justify-center mb-4">
-          <span className="text-white text-xs font-bold tracking-tight">P</span>
+      {/* Minimal Premium Footer */}
+      <footer className="border-t border-white/5 py-16 text-center bg-zinc-950 relative overflow-hidden">
+        <div className="absolute top-0 left-1/2 -translate-x-1/2 w-1/2 h-[1px] bg-gradient-to-r from-transparent via-white/20 to-transparent"></div>
+        <div className="w-10 h-10 mx-auto rounded-xl bg-white flex items-center justify-center mb-6 shadow-[0_0_15px_rgba(255,255,255,0.2)] hover:shadow-[0_0_25px_rgba(255,255,255,0.4)] transition-all duration-300">
+          <span className="text-black text-lg font-bold tracking-tight">P</span>
         </div>
-        <p className="text-xs text-gray-400 font-medium tracking-wide">
-          © {new Date().getFullYear()} PADO. Built for HackTheMatrix.
+        <p className="text-sm text-zinc-500 font-medium tracking-wide">
+          © {new Date().getFullYear()} PADO. Elevate your potential.
         </p>
       </footer>
     </>

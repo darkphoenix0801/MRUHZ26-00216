@@ -1,140 +1,99 @@
 "use client";
-import { useEffect, useRef, useState } from "react";
-import { gsap } from "gsap";
-import Link from "next/link";
-import { useRouter } from "next/navigation";
 
-export default function Navbar({ activeTab, setActiveTab }) {
-  const navRef = useRef(null);
-  const router = useRouter();
-  const [user, setUser] = useState(null);
-  const [mounted, setMounted] = useState(false);
+import React, { useState, useEffect } from "react";
+import Link from "next/link";
+import { User, LogOut, Code, Menu, X } from "lucide-react";
+import { useUser } from "./UserContext";
+
+export default function Navbar() {
+  const { user, logout } = useUser();
+  const [scrolled, setScrolled] = useState(false);
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
   useEffect(() => {
-    setMounted(true);
-    // Read user from localStorage
-    const storedUser = localStorage.getItem("pado_user");
-    if (storedUser) {
-      try {
-        setUser(JSON.parse(storedUser));
-      } catch (e) {
-        localStorage.removeItem("pado_user");
-      }
-    }
-
-    gsap.fromTo(
-      navRef.current,
-      { y: -20, opacity: 0 },
-      { y: 0, opacity: 1, duration: 0.8, ease: "power2.out" }
-    );
+    const handleScroll = () => setScrolled(window.scrollY > 20);
+    window.addEventListener("scroll", handleScroll);
+    return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
-  const handleSignOut = () => {
-    localStorage.removeItem("pado_user");
-    setUser(null);
-    window.location.href = "/";
-  };
-
-  if (!mounted) {
-    return (
-      <nav ref={navRef} className="fixed top-0 left-0 right-0 z-50 flex items-center justify-between px-8 py-4 bg-white/50 backdrop-blur-xl border-b border-gray-100 transition-all">
-        {/* Logo */}
-        <div className="flex items-center gap-2">
-          <div className="w-7 h-7 rounded-lg bg-black flex items-center justify-center">
-            <span className="text-white text-xs font-bold tracking-tight">P</span>
-          </div>
-          <span className="text-sm font-semibold tracking-tight text-gray-900">
-            PADO
-          </span>
-        </div>
-      </nav>
-    );
-  }
-
   return (
-    <nav
-      ref={navRef}
-      className="fixed top-0 left-0 right-0 z-50 flex items-center justify-between px-8 py-4 bg-white/50 backdrop-blur-xl border-b border-gray-100 transition-all"
-    >
-      {/* Logo */}
-      <Link href="/" className="flex items-center gap-2">
-        <div className="w-7 h-7 rounded-lg bg-black flex items-center justify-center">
-          <span className="text-white text-xs font-bold tracking-tight">P</span>
-        </div>
-        <span className="text-sm font-semibold tracking-tight text-gray-900">
-          PADO
-        </span>
-      </Link>
-
-      {/* Nav Links */}
-      <div className="hidden md:flex items-center gap-8">
-        {!user && (
-          <Link
-            href="/#how-it-works"
-            className="text-sm text-gray-500 hover:text-gray-900 transition-colors duration-200"
-          >
-            How it works
+    <nav className={`fixed top-0 w-full z-50 transition-all duration-300 ${scrolled ? 'bg-black/60 backdrop-blur-lg border-b border-white/10 shadow-2xl' : 'bg-transparent'}`}>
+      <div className="container mx-auto px-6 max-w-6xl">
+        <div className="flex items-center justify-between h-20">
+          
+          {/* Logo */}
+          <Link href="/" className="flex items-center gap-3 group">
+            <div className="w-10 h-10 rounded-xl bg-white flex items-center justify-center shadow-[0_0_20px_rgba(255,255,255,0.3)] group-hover:shadow-[0_0_30px_rgba(255,255,255,0.5)] transition-all duration-300">
+              <span className="text-black text-xl font-bold tracking-tighter">P</span>
+            </div>
+            <span className="font-bold text-2xl tracking-tight text-white hidden sm:block group-hover:text-gray-200 transition-colors">
+              PADO
+            </span>
           </Link>
-        )}
-        {user && typeof setActiveTab === "function" ? (
-          <div className="flex items-center gap-6">
-            {["Register", "Interview", "Analytics", "Audio"].map((tab) => (
-              <button
-                key={tab}
-                onClick={() => setActiveTab(tab)}
-                className={`text-sm font-medium transition-all duration-200 ${
-                  activeTab === tab 
-                    ? "text-gray-900 border-b-2 border-gray-900 pb-1" 
-                    : "text-gray-500 hover:text-gray-900"
-                }`}
-              >
-                {tab}
-              </button>
-            ))}
-            <span className="text-sm text-gray-300 ml-2">|</span>
-            <span className="text-sm text-gray-500">Hi, {user.name}</span>
+
+          {/* Desktop Nav */}
+          <div className="hidden md:flex items-center gap-8">
+            <Link href="#how-it-works" className="text-sm font-medium text-gray-400 hover:text-white transition-colors">How it Works</Link>
+            <Link href="/dashboard" className="text-sm font-medium text-gray-400 hover:text-white transition-colors">Platform</Link>
+            
+            <div className="h-6 w-px bg-white/20 mx-2"></div>
+            
+            {user ? (
+              <div className="flex items-center gap-4">
+                <Link href="/dashboard" className="flex items-center gap-2 text-sm font-medium text-white hover:text-blue-400 transition-colors">
+                  <div className="w-8 h-8 rounded-full bg-blue-500/20 flex items-center justify-center border border-blue-500/30">
+                    <User size={14} className="text-blue-400" />
+                  </div>
+                  {user.name}
+                </Link>
+                <button 
+                  onClick={logout} 
+                  className="p-2 rounded-full hover:bg-white/10 text-gray-400 hover:text-red-400 transition-all"
+                  title="Logout"
+                >
+                  <LogOut size={18} />
+                </button>
+              </div>
+            ) : (
+              <div className="flex items-center gap-4">
+                <Link href="/auth" className="text-sm font-medium text-gray-300 hover:text-white transition-colors">
+                  Log in
+                </Link>
+                <Link href="/auth" className="px-5 py-2.5 bg-white text-black text-sm font-semibold rounded-full hover:bg-gray-200 transition-all shadow-[0_0_15px_rgba(255,255,255,0.2)] hover:shadow-[0_0_25px_rgba(255,255,255,0.4)]">
+                  Get Started
+                </Link>
+              </div>
+            )}
           </div>
-        ) : user ? (
-          <>
-            <Link
-              href="/dashboard"
-              className="text-sm font-medium text-gray-900 transition-colors duration-200"
-            >
-              Dashboard
-            </Link>
-            <span className="text-sm text-gray-300">|</span>
-            <span className="text-sm text-gray-500">Hi, {user.name}</span>
-          </>
-        ) : null}
+
+          {/* Mobile Toggle */}
+          <button 
+            className="md:hidden p-2 text-white"
+            onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+          >
+            {mobileMenuOpen ? <X size={24} /> : <Menu size={24} />}
+          </button>
+        </div>
       </div>
 
-      {/* CTA */}
-      <div className="flex items-center gap-4">
-        {!user && (
-          <>
-            <Link
-              href="/auth"
-              className="text-sm text-gray-500 hover:text-gray-900 font-medium transition-colors"
-            >
-              Log in
+      {/* Mobile Menu */}
+      {mobileMenuOpen && (
+        <div className="md:hidden absolute top-20 left-0 w-full bg-black/95 backdrop-blur-xl border-b border-white/10 py-6 px-6 flex flex-col gap-6 shadow-2xl">
+          <Link href="#how-it-works" onClick={() => setMobileMenuOpen(false)} className="text-lg font-medium text-gray-300">How it Works</Link>
+          <Link href="/dashboard" onClick={() => setMobileMenuOpen(false)} className="text-lg font-medium text-gray-300">Platform</Link>
+          <div className="h-px w-full bg-white/10"></div>
+          {user ? (
+            <div className="flex flex-col gap-4">
+              <span className="text-sm text-gray-400">Signed in as <strong className="text-white">{user.name}</strong></span>
+              <button onClick={() => { logout(); setMobileMenuOpen(false); }} className="text-left text-red-400 font-medium">Log out</button>
+            </div>
+          ) : (
+            <Link href="/auth" onClick={() => setMobileMenuOpen(false)} className="px-5 py-3 text-center bg-white text-black font-semibold rounded-xl">
+              Get Started
             </Link>
-            <Link
-              href="/auth"
-              className="text-sm font-medium bg-black text-white px-5 py-2 rounded-full hover:bg-gray-800 transition-all duration-200 shadow-md shadow-gray-200"
-            >
-              Sign up
-            </Link>
-          </>
-        )}
-        {user && (
-          <button
-            onClick={handleSignOut}
-            className="text-sm font-medium bg-gray-100 text-gray-700 px-5 py-2 rounded-full hover:bg-gray-200 transition-all duration-200"
-          >
-            Sign out
-          </button>
-        )}
-      </div>
+          )}
+        </div>
+      )}
     </nav>
   );
 }

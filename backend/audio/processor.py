@@ -1,30 +1,53 @@
 import os
-import tempfile
+import time
 import librosa
 import numpy as np
-import whisper
+from dotenv import load_dotenv
+from groq import Groq
 
-# Load a lightweight whisper model globally so it doesn't reload on every request
-# Using 'base' or 'tiny' for speed on local machines
-print("🎙️ Loading Whisper Model (base)... this may take a moment on first run.")
-try:
-    whisper_model = whisper.load_model("base")
-except Exception as e:
-    print(f"⚠️ Failed to load whisper model: {e}")
-    whisper_model = None
+# Load environment variables from .env
+load_dotenv()
+GROQ_API_KEY = os.environ.get("GROQ_API_KEY", "")
+groq_client = Groq(api_key=GROQ_API_KEY) if GROQ_API_KEY else None
 
 def transcribe_audio(file_path: str) -> str:
     """
-    Uses OpenAI's Whisper model to transcribe speech to text.
+    Uses Groq's hosted Whisper model to transcribe speech to text.
     """
-    if whisper_model is None:
-        raise RuntimeError("Whisper model is not loaded.")
+    if not groq_client:
+        raise RuntimeError("GROQ_API_KEY is not set. Cannot transcribe audio.")
         
-    print(f"🎙️ Transcribing audio file: {file_path}")
-    # Using fp16=False to avoid warnings on CPU execution
-    result = whisper_model.transcribe(file_path, fp16=False)
-    text = result["text"].strip()
-    return text
+    print(f"🎙️ Transcribing audio file via Groq Whisper API: {file_path}")
+    
+    def _do_transcribe():
+        with open(file_path, "rb") as file:
+            # We use whisper-large-v3 model as hosted by Groq
+            transcription = groq_client.audio.transcriptions.create(
+                file=(os.path.basename(file_path), file.read()),
+                model="whisper-large-v3",
+                response_format="text"
+            )
+            return transcription
+            
+    # Exponential backoff retry logic
+    max_retries = 3
+    base_delay = 2
+    for attempt in range(max_retries):
+        try:
+            result = _do_transcribe()
+            # Depending on SDK version, it might return a string when response_format='text'
+            # or an object with a .text attribute.
+            if hasattr(result, "text"):
+                return result.text.strip()
+            return str(result).strip()
+        except Exception as e:
+            if attempt == max_retries - 1:
+                print(f"⚠️ Groq Whisper transcription failed: {e}")
+                # Return empty string to allow graceful degradation handled by main.py
+                return "" 
+            delay = base_delay * (2 ** attempt)
+            print(f"⚠️ Transcription failed. Retrying in {delay} seconds... (Error: {e})")
+            time.sleep(delay)
 
 def analyze_confidence(file_path: str) -> float:
     """

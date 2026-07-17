@@ -10,3 +10,4 @@ pado-web/node_modules/
 .tempmediaStorage/
 db.sqlite3
 pado.db
+.env
