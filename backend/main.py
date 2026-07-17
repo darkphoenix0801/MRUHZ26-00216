@@ -90,14 +90,17 @@ def load_model():
     script_dir = os.path.dirname(os.path.abspath(__file__))
     absolute_model_path = os.path.join(script_dir, "ml", "placement_model.pkl")
     
+    from backend.db import init_db
+    init_db()
+    
     if os.path.exists(absolute_model_path):
         model = joblib.load(absolute_model_path)
-        print(f"✅ Successfully loaded tuned XGBoost model from {absolute_model_path}")
+        print(f" Successfully loaded tuned XGBoost model from {absolute_model_path}")
     else:
-        print(f"⚠️ Warning: Model file not found at {absolute_model_path}")
+        print(f" Warning: Model file not found at {absolute_model_path}")
         
     from backend.agent.hf_datasets import preload_datasets
-    print("⏳ Starting Hugging Face dataset background preloading...")
+    print(" Starting Hugging Face dataset background preloading...")
     preload_datasets()
 
 # Helper: compute placement probability inside FastAPI internally
@@ -136,7 +139,7 @@ def predict_placement(features: StudentFeatures):
 @app.post("/student/register")
 def register_student(student: StudentRegistration):
     try:
-        print(f"📝 Starting registration for student: {student.student_id}")
+        print(f" Starting registration for student: {student.student_id}")
         
         if student.resume_text == "N/A" or not student.resume_text.strip():
             extracted_data = {"skills": ["Python", "Data Structures", "Algorithms"]}
@@ -183,7 +186,7 @@ def register_student(student: StudentRegistration):
                     topic=topic
                 )
                 
-        print("🎉 Student registration and roadmap generation complete!")
+        print(" Student registration and roadmap generation complete!")
         return {
             "status": "success",
             "message": "Student successfully registered and study roadmap generated.",
@@ -194,7 +197,7 @@ def register_student(student: StudentRegistration):
     except ValueError as val_err:
         raise HTTPException(status_code=500, detail=str(val_err))
     except Exception as e:
-        print(f"❌ Error registering student: {e}")
+        print(f" Error registering student: {e}")
         raise HTTPException(status_code=500, detail=f"Failed to register student: {str(e)}")
 
 @app.post("/student/login")
@@ -338,7 +341,7 @@ def submit_answer(request: SubmitAnswerRequest):
             }
         else:
             # C. Interview is complete! Compute performance summaries and run ML prediction
-            print("🎓 Max questions reached. Compiling final metrics...")
+            print(" Max questions reached. Compiling final metrics...")
             past_turns = get_past_answers(request.student_id, request.session_id)
             
             # Group scores by category to supply to XGBoost
@@ -354,7 +357,7 @@ def submit_answer(request: SubmitAnswerRequest):
             avg_interview = sum(all_scores) / len(all_scores) if all_scores else 70.0
             
             # Call our XGBoost model
-            print("🧠 Running XGBoost prediction classifier...")
+            print(" Running XGBoost prediction classifier...")
             probability = calculate_placement_probability_internal(
                 cgpa=profile["cgpa"],
                 dsa=avg_dsa,
@@ -388,7 +391,7 @@ def submit_answer(request: SubmitAnswerRequest):
             }
             
     except Exception as e:
-        print(f"❌ Error in submit_answer: {e}")
+        print(f" Error in submit_answer: {e}")
         raise HTTPException(status_code=500, detail=str(e))
 
 @app.post("/interview/answer_audio")
@@ -460,7 +463,7 @@ async def submit_answer_audio(
                 }
             }
         else:
-            print("🎓 Max questions reached. Compiling final metrics...")
+            print(" Max questions reached. Compiling final metrics...")
             past_turns = get_past_answers(student_id, session_id)
             
             # Group scores by category to supply to XGBoost
@@ -474,7 +477,7 @@ async def submit_answer_audio(
             avg_comm = sum(comm_scores) / len(comm_scores) if comm_scores else 70.0
             avg_interview = sum(all_scores) / len(all_scores) if all_scores else 70.0
             
-            print("🧠 Running XGBoost prediction classifier...")
+            print(" Running XGBoost prediction classifier...")
             # We must import or use the existing calculate_placement_probability_internal
             # It's defined above in main.py, so we can just call it
             probability = calculate_placement_probability_internal(
@@ -510,7 +513,7 @@ async def submit_answer_audio(
             }
 
     except Exception as e:
-        print(f"❌ Error in submit_answer_audio: {e}")
+        print(f" Error in submit_answer_audio: {e}")
         raise HTTPException(status_code=500, detail=str(e))
 
 # 8. Get Weekly Progress History (DB Endpoint)

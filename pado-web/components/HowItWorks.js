@@ -56,15 +56,14 @@ export default function HowItWorks() {
   ];
 
   return (
-    <section id="how-it-works" ref={sectionRef} className="py-32 relative bg-black">
-      <div className="absolute inset-0 bg-gradient-to-b from-black via-zinc-950 to-black z-0"></div>
+    <section id="how-it-works" ref={sectionRef} className="py-32 relative bg-white border-t border-gray-100">
       
       <div className="container mx-auto px-6 relative z-10 max-w-6xl">
         <div className="text-center mb-20">
-          <h2 className="text-4xl md:text-5xl font-bold mb-6 text-white">
-            The <span className="text-gradient">End-to-End</span> Pipeline
+          <h2 className="text-4xl md:text-5xl font-extrabold mb-6 text-gray-900">
+            The <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-emerald-500">End-to-End</span> Pipeline
           </h2>
-          <p className="text-gray-400 max-w-2xl mx-auto text-lg">
+          <p className="text-gray-600 max-w-2xl mx-auto text-lg">
             We don't do static question banks. PADO builds a real-time, personalized ecosystem tailored precisely to your background.
           </p>
         </div>
@@ -73,15 +72,15 @@ export default function HowItWorks() {
           {steps.map((step, idx) => (
             <div 
               key={idx} 
-              className="group glass-card rounded-3xl p-8 transition-all duration-300 hover:scale-[1.02] hover:-translate-y-2 hover:shadow-[0_20px_40px_rgba(0,0,0,0.5)] hover:border-white/20 relative overflow-hidden"
+              className="group bg-white rounded-3xl p-8 transition-all duration-300 hover:scale-[1.02] hover:-translate-y-2 hover:shadow-[0_20px_40px_rgba(0,0,0,0.08)] border border-gray-100 hover:border-gray-300 relative overflow-hidden shadow-lg"
             >
-              <div className="absolute top-0 right-0 w-32 h-32 bg-white/5 rounded-full blur-3xl group-hover:bg-white/10 transition-colors"></div>
+              <div className="absolute top-0 right-0 w-32 h-32 bg-gray-50 rounded-full blur-3xl group-hover:bg-gray-100 transition-colors"></div>
               
-              <div className={`w-14 h-14 rounded-2xl flex items-center justify-center mb-6 border ${step.bg}`}>
+              <div className={`w-14 h-14 rounded-2xl flex items-center justify-center mb-6 border bg-white shadow-sm`}>
                 {step.icon}
               </div>
-              <h3 className="text-xl font-bold text-white mb-3">{step.title}</h3>
-              <p className="text-sm text-gray-400 leading-relaxed font-medium">
+              <h3 className="text-xl font-bold text-gray-900 mb-3">{step.title}</h3>
+              <p className="text-sm text-gray-600 leading-relaxed font-medium">
                 {step.desc}
               </p>
             </div>

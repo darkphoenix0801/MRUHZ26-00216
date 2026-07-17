@@ -1,0 +1,39 @@
+PADO - Hackathon Development Summary
+====================================
+
+Below is a complete log of the development, debugging, and design overhaul phases executed during this hackathon session to build the PADO application.
+
+1. Backend Stability & Database Initialization
+----------------------------------------------
+- Addressed initial SQLite database missing table errors ("no such table: student_profile") by implementing an automatic `init_db()` routine on FastAPI startup. This ensured the schema was created dynamically upon launch without manual intervention.
+
+2. Environment & API Key Configuration
+--------------------------------------
+- Fixed intermittent "GROQ_API_KEY is not set" errors. We updated the `load_dotenv()` logic in the backend (`agent/llm_client.py` and `audio/processor.py`) to properly resolve absolute paths to the `.env` file, bypassing Python relative pathing quirks when launched from the root directory.
+
+3. Windows Encoding Crash Fix
+-----------------------------
+- Resolved a critical crash caused by standard output encoding on Windows (`'charmap' codec can't encode character...`). We stripped all non-ASCII emoji characters from the backend codebase to ensure flawless execution in standard command prompt and PowerShell environments.
+
+4. Connectivity Optimization (Speed Upgrade)
+--------------------------------------------
+- Discovered and eliminated a significant bottleneck causing a 2-second delay on all frontend API requests. By hardcoding frontend fetch requests to bypass `localhost` in favor of `127.0.0.1`, we prevented Node.js from attempting and timing out on IPv6 connections, resulting in virtually instant API response times.
+
+5. SRS Documentation Generation
+-------------------------------
+- Generated a comprehensive Software Requirements Specification (SRS Lite) document tailored for the hackathon jury, detailing the architecture, tech stack (Next.js, FastAPI, SQLite, Groq), entities, and engineering tenets.
+
+6. Landing Page Performance & Dynamic Showcase
+----------------------------------------------
+- Removed the slow cinematic entrance animation to favor immediate engagement.
+- Engineered a brand new, highly impressive `DynamicShowcase` featuring horizontal GSAP ScrollTrigger animations, giving the page a lengthier, premium feel.
+- Introduced the GSAP-animated "I.D.E.A Framework" section (Innovative Ideas, Dynamic Roadmaps, Empowerment, Attractive Design), featuring 3D flips and continuous floating animations for maximum visual impact.
+
+7. Universal Dark Theme Synchronization
+---------------------------------------
+- Conducted a massive UI overhaul across the entire dashboard to correct the mismatched light themes.
+- Converted Setup, Roadmap, Interview, Audio, Analytics, and Registration components into a sleek, immersive dark mode utilizing frosted glass (`bg-zinc-900/50`) and neon accents, ensuring the internal application perfectly matched the premium aesthetics of the landing page.
+- Updated the footer on the landing page to feature the custom copyright text: "All Rights are reserved : Bloodline Agents".
+
+---
+This concludes the development summary for the current session. The application is now incredibly fast, stable, visually impressive, and fully ready for presentation.

@@ -78,8 +78,8 @@ Score this answer from 0-100.
 If the score is below 60, identify the specific weakness (be precise and actionable, e.g. "O(N^2) instead of O(N) time", or "Graph traversal - BFS/DFS confusion").
 
 IMPORTANT scoring rules:
-- If the answer is blank, just "#", "I don't know", "not sure", or completely irrelevant → content_score MUST be 0, and weakness_tag MUST be "Lacks basic knowledge of topic".
-- If the code/answer is mostly correct but has inefficiencies → score between 40-70.
+- If the answer is blank, just "#", "I don't know", "not sure", or completely irrelevant  content_score MUST be 0, and weakness_tag MUST be "Lacks basic knowledge of topic".
+- If the code/answer is mostly correct but has inefficiencies  score between 40-70.
 - Only give above 80 if the answer is genuinely strong, correct, and well-explained.
 
 Return ONLY a valid JSON object containing exactly these three keys with your own honestly evaluated values:
@@ -102,6 +102,6 @@ Produce a short readiness summary:
 2. Whether the student is currently "Ready", "Needs Improvement", or "Not Ready" for {target_company}.
 3. One specific, actionable next step.
 
-Keep it under 100 words, direct, and specific — no generic advice.
+Keep it under 100 words, direct, and specific  no generic advice.
 Return plain text format, no JSON wrappers.
 """

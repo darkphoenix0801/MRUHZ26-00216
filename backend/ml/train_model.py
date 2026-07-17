@@ -6,7 +6,7 @@ import joblib
 import os
 
 def train_and_tune_model():
-    print("🚀 Starting Model Training and Hyperparameter Tuning...")
+    print(" Starting Model Training and Hyperparameter Tuning...")
     
     # Dynamically find the absolute path to the data file so it works from anywhere
     script_dir = os.path.dirname(os.path.abspath(__file__))
@@ -17,7 +17,7 @@ def train_and_tune_model():
         raise FileNotFoundError(f"Could not find dataset at {data_path}")
         
     df = pd.read_csv(data_path)
-    print(f"✅ Loaded {len(df)} records from the dataset.")
+    print(f" Loaded {len(df)} records from the dataset.")
     
     # 2. Split into Features (X) and Target (y)
     X = df[['cgpa', 'dsa_score', 'aptitude_score', 'communication_score', 'mock_interview_avg_score']]
@@ -38,7 +38,7 @@ def train_and_tune_model():
         'min_child_weight': [1, 3, 5]               
     }
     
-    print("⏳ Running RandomizedSearchCV (tuning hyperparameters)... This might take a minute.")
+    print(" Running RandomizedSearchCV (tuning hyperparameters)... This might take a minute.")
     
     search = RandomizedSearchCV(
         estimator=base_model,
@@ -53,18 +53,18 @@ def train_and_tune_model():
     search.fit(X_train, y_train)
     best_model = search.best_estimator_
     
-    print("\n🎉 TUNING COMPLETE! 🎉")
+    print("\n TUNING COMPLETE! ")
     print("-" * 30)
-    print(f"🥇 Best Hyperparameters Found:")
+    print(f" Best Hyperparameters Found:")
     for key, value in search.best_params_.items():
         print(f"   - {key}: {value}")
     print("-" * 30)
-    print(f"📈 Best Cross-Validation Accuracy: {search.best_score_ * 100:.2f}%")
+    print(f" Best Cross-Validation Accuracy: {search.best_score_ * 100:.2f}%")
     
     y_pred = best_model.predict(X_test)
     test_acc = accuracy_score(y_test, y_pred)
     
-    print(f"🎯 Accuracy on Unseen Test Data: {test_acc * 100:.2f}%")
+    print(f" Accuracy on Unseen Test Data: {test_acc * 100:.2f}%")
     print("\nDetailed Classification Report:")
     print(classification_report(y_test, y_pred))
     
@@ -74,7 +74,7 @@ def train_and_tune_model():
     model_path = os.path.join(ml_dir, 'placement_model.pkl')
     joblib.dump(best_model, model_path)
     
-    print(f"💾 Model saved successfully to {model_path}!")
+    print(f" Model saved successfully to {model_path}!")
 
 if __name__ == "__main__":
     train_and_tune_model()

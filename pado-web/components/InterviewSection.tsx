@@ -2,7 +2,7 @@
 import { useState, useRef, useEffect } from "react";
 import { gsap } from "gsap";
 
-const BACKEND = "http://localhost:8000";
+const BACKEND = "http://127.0.0.1:8000";
 
 function ScoreBar({ score }: { score: number }) {
   return (

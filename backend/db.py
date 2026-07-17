@@ -11,7 +11,7 @@ def get_db_connection():
 
 def init_db():
     """Initializes the database schema if it doesn't already exist."""
-    print("🗄️ Initializing SQLite Database...")
+    print(" Initializing SQLite Database...")
     conn = get_db_connection()
     cursor = conn.cursor()
     
@@ -84,7 +84,7 @@ def init_db():
         
     conn.commit()
     conn.close()
-    print("✅ Database tables successfully created/validated!")
+    print(" Database tables successfully created/validated!")
 
 
 # --- HELPER FUNCTIONS FOR INTERACTION ---

@@ -16,7 +16,7 @@ def pick_next_category(student_id: str, session_id: str, target_company: str) ->
     
     # Rule A: If it's the start of the interview, start with DSA
     if not past_turns:
-        print("🤖 Session memory is empty. Starting with default category: DSA")
+        print(" Session memory is empty. Starting with default category: DSA")
         return 'DSA'
         
     # Rule B: Check for weak areas (where content_score < 60)
@@ -29,18 +29,18 @@ def pick_next_category(student_id: str, session_id: str, target_company: str) ->
     if weak_categories:
         # DRILL DOWN: Pick the category the candidate failed most frequently
         most_common_weak = Counter(weak_categories).most_common(1)[0][0]
-        print(f"🕵️ Agent detected weakness in: {most_common_weak}. Pivoting to drill down here.")
+        print(f" Agent detected weakness in: {most_common_weak}. Pivoting to drill down here.")
         return most_common_weak
         
     # Rule C: Broaden coverage (pick the next category that hasn't been asked yet)
     asked_categories = set(turn['question_category'] for turn in past_turns)
     for cat in CATEGORIES:
         if cat not in asked_categories:
-            print(f"🕵️ Candidate is doing well. Expanding coverage to new category: {cat}")
+            print(f" Candidate is doing well. Expanding coverage to new category: {cat}")
             return cat
             
     # Rule D: If all categories are explored and done well, loop back to the first one
-    print("🕵️ All categories explored. Loop back to standard rotation.")
+    print(" All categories explored. Loop back to standard rotation.")
     return CATEGORIES[len(past_turns) % len(CATEGORIES)]
 
 from backend.agent.company_kb import get_company_loop
@@ -72,16 +72,16 @@ def generate_interview_question(student_id: str, session_id: str, target_company
     past_questions_list = [turn['question_text'] for turn in past_turns]
     
     # 3. Fetch Live Web Context for the target company and round
-    print(f"🔍 Fetching dataset context for {target_company} {round_type} round...")
+    print(f" Fetching dataset context for {target_company} {round_type} round...")
     from backend.agent.hf_datasets import get_dataset_context
     live_context = get_dataset_context(target_company, round_type)
     
     # Fallback to web scraper if dataset fails or returns empty
     if not live_context or "No dataset data found" in live_context:
-        print(f"⚠️ Falling back to web scraper...")
+        print(f" Falling back to web scraper...")
         live_context = get_latest_interview_context(target_company, round_type)
         
-    print(f"✅ Context retrieved ({len(live_context)} chars).")
+    print(f" Context retrieved ({len(live_context)} chars).")
 
     # 4. Format the prompt and call the LLM
     prompt = QUESTION_GENERATION_PROMPT.format(
@@ -94,7 +94,7 @@ def generate_interview_question(student_id: str, session_id: str, target_company
         live_context=live_context
     )
     
-    print(f"🤖 Generating local LLM question for [{target_company}] Round: {round_name}...")
+    print(f" Generating local LLM question for [{target_company}] Round: {round_name}...")
     question_text = call_local_llm(prompt).strip()
     
     # We return the round_name + round_type as the "category" for legacy compatibility
@@ -116,7 +116,7 @@ def score_and_store_turn(student_id: str, session_id: str, question_number: int,
         transcript=answer_text
     )
     
-    print("🤖 Scoring answer with STRICT judge (temperature=0)...")
+    print(" Scoring answer with STRICT judge (temperature=0)...")
     score_data = clean_and_parse_json(call_local_llm_as_judge(prompt))
     
     content_score = float(score_data.get("content_score", 0))
@@ -127,7 +127,7 @@ def score_and_store_turn(student_id: str, session_id: str, question_number: int,
     final_confidence = provided_confidence_score if provided_confidence_score is not None else 85.0
     
     # 3. Save the turn to DB memory
-    print("💾 Saving scored turn to database memory...")
+    print(" Saving scored turn to database memory...")
     save_interview_turn(
         student_id=student_id,
         session_id=session_id,
@@ -171,6 +171,6 @@ def generate_session_summary(student_id: str, session_id: str, model_output_prob
         target_company=profile.get("target_company", "Target Company")
     )
     
-    print("🤖 Generating final recommendation text...")
+    print(" Generating final recommendation text...")
     summary_text = call_local_llm(prompt).strip()
     return summary_text

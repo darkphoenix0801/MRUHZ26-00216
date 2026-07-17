@@ -10,7 +10,7 @@ def get_latest_interview_context(company: str, round_type: str) -> str:
     
     # Formulate a targeted search query
     query = f"{company} {round_type} interview questions {current_year} leetcode glassdoor"
-    print(f"🌐 Scraping live web for: '{query}'")
+    print(f" Scraping live web for: '{query}'")
     
     context_snippets = []
     try:
@@ -35,5 +35,5 @@ def get_latest_interview_context(company: str, round_type: str) -> str:
             return "No recent live web data found."
             
     except Exception as e:
-        print(f"⚠️ Web scraping failed: {e}")
+        print(f" Web scraping failed: {e}")
         return "Live web search unavailable at the moment."

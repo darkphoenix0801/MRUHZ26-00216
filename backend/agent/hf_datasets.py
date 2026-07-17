@@ -11,23 +11,23 @@ _cache_lock = threading.Lock()
 
 def _load_dsa_dataset():
     if _ds_cache["dsa"] is None:
-        print("⏳ Loading LeetCode dataset from HuggingFace...")
+        print(" Loading LeetCode dataset from HuggingFace...")
         try:
             _ds_cache["dsa"] = load_dataset("kaysss/leetcode-problem-solutions", split="train")
-            print("✅ LeetCode dataset loaded!")
+            print(" LeetCode dataset loaded!")
         except Exception as e:
-            print(f"⚠️ Failed to load LeetCode dataset: {e}")
+            print(f" Failed to load LeetCode dataset: {e}")
             _ds_cache["dsa"] = []
     return _ds_cache["dsa"]
 
 def _load_behavioral_dataset():
     if _ds_cache["behavioral"] is None:
-        print("⏳ Loading Behavioral dataset from HuggingFace...")
+        print(" Loading Behavioral dataset from HuggingFace...")
         try:
             _ds_cache["behavioral"] = load_dataset("Aiman1234/Interview-questions", split="train")
-            print("✅ Behavioral dataset loaded!")
+            print(" Behavioral dataset loaded!")
         except Exception as e:
-            print(f"⚠️ Failed to load Behavioral dataset: {e}")
+            print(f" Failed to load Behavioral dataset: {e}")
             _ds_cache["behavioral"] = []
     return _ds_cache["behavioral"]
 

@@ -8,8 +8,9 @@ from google import genai
 # pyrefly: ignore [missing-import]
 from google.genai import types
 
-# Load environment variables from .env
-load_dotenv()
+# Load environment variables from the absolute path of the root .env file
+root_env_path = os.path.join(os.path.dirname(os.path.dirname(os.path.dirname(__file__))), ".env")
+load_dotenv(dotenv_path=root_env_path)
 
 GROQ_API_KEY = os.environ.get("GROQ_API_KEY", "")
 GEMINI_API_KEY = os.environ.get("GEMINI_API_KEY", "")
@@ -37,7 +38,7 @@ def clean_and_parse_json(text: str) -> dict:
     try:
         return json.loads(cleaned)
     except json.JSONDecodeError as e:
-        print(f"❌ Failed to parse JSON. Raw Text: {text}")
+        print(f" Failed to parse JSON. Raw Text: {text}")
         raise ValueError(f"LLM did not return a valid JSON structure: {e}")
 
 def call_with_retry(func, max_retries=3, base_delay=2):
@@ -49,7 +50,7 @@ def call_with_retry(func, max_retries=3, base_delay=2):
             if attempt == max_retries - 1:
                 raise
             delay = base_delay * (2 ** attempt)
-            print(f"⚠️ API Call Failed. Retrying in {delay} seconds... (Error: {e})")
+            print(f" API Call Failed. Retrying in {delay} seconds... (Error: {e})")
             time.sleep(delay)
 
 def call_groq(prompt: str, temperature: float = 0.2, system_message: str = None) -> str:
@@ -93,7 +94,7 @@ def call_local_llm(prompt: str) -> str:
         return call_groq(prompt, temperature=0.2)
     except Exception as e:
         if USE_GEMINI_FALLBACK and GEMINI_API_KEY:
-            print(f"⚠️ Groq failed, falling back to Gemini: {e}")
+            print(f" Groq failed, falling back to Gemini: {e}")
             return call_gemini(prompt, temperature=0.2)
         raise RuntimeError(f"Error communicating with LLM: {e}")
 
@@ -114,7 +115,7 @@ def call_local_llm_as_judge(prompt: str) -> str:
         return call_groq(prompt, temperature=0.0, system_message=system_message)
     except Exception as e:
         if USE_GEMINI_FALLBACK and GEMINI_API_KEY:
-            print(f"⚠️ Groq failed (judge), falling back to Gemini: {e}")
+            print(f" Groq failed (judge), falling back to Gemini: {e}")
             return call_gemini(prompt, temperature=0.0, system_message=system_message)
         raise RuntimeError(f"Error communicating with LLM judge: {e}")
 
@@ -137,11 +138,11 @@ if __name__ == "__main__":
     # Test script to run
     test_resume = "FastAPI developer with 2 years experience. CGPA: 8.8. Worked on SQL and machine learning projects."
     try:
-        print("🔍 Testing LLM Resume Extraction...")
+        print(" Testing LLM Resume Extraction...")
         res = extract_skills_from_resume(test_resume)
         print(json.dumps(res, indent=2))
         
-        print("\n🔍 Testing LLM Roadmap Generation...")
+        print("\n Testing LLM Roadmap Generation...")
         roadmap = generate_roadmap_from_skills(json.dumps(res), "Google")
         print(json.dumps(roadmap, indent=2))
     except Exception as e:

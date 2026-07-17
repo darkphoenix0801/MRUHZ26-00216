@@ -42,27 +42,26 @@ export default function Hero() {
   return (
     <section ref={heroRef} className="relative min-h-[90vh] flex items-center justify-center overflow-hidden pt-20">
       {/* Dynamic Background */}
-      <div ref={blobRef} className="absolute inset-0 z-0 overflow-hidden opacity-40">
-        <div className="absolute top-[20%] left-[20%] w-[500px] h-[500px] bg-blue-600/30 rounded-full mix-blend-screen filter blur-[100px] animate-blob"></div>
-        <div className="absolute top-[30%] right-[20%] w-[400px] h-[400px] bg-purple-600/30 rounded-full mix-blend-screen filter blur-[100px] animate-blob animation-delay-2000"></div>
-        <div className="absolute -bottom-[10%] left-[40%] w-[600px] h-[600px] bg-indigo-600/30 rounded-full mix-blend-screen filter blur-[100px] animate-blob animation-delay-4000"></div>
-        <div className="absolute inset-0 bg-[url('https://grainy-gradients.vercel.app/noise.svg')] opacity-20 brightness-100 contrast-150 mix-blend-overlay"></div>
+      <div ref={blobRef} className="absolute inset-0 z-0 overflow-hidden opacity-60">
+        <div className="absolute top-[20%] left-[20%] w-[500px] h-[500px] bg-blue-300/40 rounded-full mix-blend-multiply filter blur-[100px] animate-blob"></div>
+        <div className="absolute top-[30%] right-[20%] w-[400px] h-[400px] bg-purple-300/40 rounded-full mix-blend-multiply filter blur-[100px] animate-blob animation-delay-2000"></div>
+        <div className="absolute -bottom-[10%] left-[40%] w-[600px] h-[600px] bg-indigo-300/40 rounded-full mix-blend-multiply filter blur-[100px] animate-blob animation-delay-4000"></div>
       </div>
 
       <div className="container relative z-10 mx-auto px-6 max-w-5xl">
         <div ref={textRef} className="flex flex-col items-center text-center">
           
-          <div className="mb-6 inline-flex items-center gap-2 px-4 py-2 rounded-full glass border-white/20 text-sm font-medium text-gray-200 shadow-xl">
-            <Sparkles size={16} className="text-blue-400 animate-pulse" />
+          <div className="mb-6 inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white border border-indigo-100 text-sm font-medium text-indigo-700 shadow-lg">
+            <Sparkles size={16} className="text-indigo-500 animate-pulse" />
             <span>PADO 2.0 is now live</span>
           </div>
 
-          <h1 className="text-5xl md:text-7xl lg:text-8xl font-bold tracking-tight mb-8">
+          <h1 className="text-5xl md:text-7xl lg:text-8xl font-bold tracking-tight mb-8 text-gray-900">
             Master your interview. <br />
-            <span className="text-gradient-accent">Secure your future.</span>
+            <span className="text-transparent bg-clip-text bg-gradient-to-r from-indigo-500 to-purple-500">Secure your future.</span>
           </h1>
           
-          <p className="text-lg md:text-xl text-gray-400 max-w-2xl mx-auto mb-12 font-medium leading-relaxed">
+          <p className="text-lg md:text-xl text-gray-600 max-w-2xl mx-auto mb-12 font-medium leading-relaxed">
             The hyper-personalized, adaptive AI placement ecosystem that analyzes your resume, builds your roadmap, and simulates high-pressure interviews in real-time.
           </p>
 
@@ -85,28 +84,28 @@ export default function Hero() {
           
           {/* Feature Highlights */}
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mt-24 w-full text-left">
-            <div className="glass-card p-6 rounded-2xl flex flex-col gap-3">
-              <div className="w-10 h-10 rounded-lg bg-blue-500/20 flex items-center justify-center mb-2 text-blue-400">
+            <div className="bg-white/80 backdrop-blur-sm border border-gray-100 p-6 rounded-2xl flex flex-col gap-3 shadow-[0_4px_20px_rgba(0,0,0,0.05)] hover:-translate-y-1 transition-transform">
+              <div className="w-10 h-10 rounded-lg bg-blue-50 flex items-center justify-center mb-2 text-blue-600 shadow-inner">
                 <Brain size={20} />
               </div>
-              <h3 className="font-semibold text-white">Adaptive Intelligence</h3>
-              <p className="text-sm text-gray-400">The LLM pivots questions based on your weakest technical areas.</p>
+              <h3 className="font-semibold text-gray-900">Adaptive Intelligence</h3>
+              <p className="text-sm text-gray-600">The LLM pivots questions based on your weakest technical areas.</p>
             </div>
             
-            <div className="glass-card p-6 rounded-2xl flex flex-col gap-3">
-              <div className="w-10 h-10 rounded-lg bg-purple-500/20 flex items-center justify-center mb-2 text-purple-400">
+            <div className="bg-white/80 backdrop-blur-sm border border-gray-100 p-6 rounded-2xl flex flex-col gap-3 shadow-[0_4px_20px_rgba(0,0,0,0.05)] hover:-translate-y-1 transition-transform">
+              <div className="w-10 h-10 rounded-lg bg-purple-50 flex items-center justify-center mb-2 text-purple-600 shadow-inner">
                 <Mic size={20} />
               </div>
-              <h3 className="font-semibold text-white">Voice Analytics</h3>
-              <p className="text-sm text-gray-400">Powered by Whisper and Librosa to evaluate confidence and pacing.</p>
+              <h3 className="font-semibold text-gray-900">Voice Analytics</h3>
+              <p className="text-sm text-gray-600">Practice behavioral rounds by speaking. We transcribe and evaluate instantly.</p>
             </div>
             
-            <div className="glass-card p-6 rounded-2xl flex flex-col gap-3">
-              <div className="w-10 h-10 rounded-lg bg-emerald-500/20 flex items-center justify-center mb-2 text-emerald-400">
+            <div className="bg-white/80 backdrop-blur-sm border border-gray-100 p-6 rounded-2xl flex flex-col gap-3 shadow-[0_4px_20px_rgba(0,0,0,0.05)] hover:-translate-y-1 transition-transform">
+              <div className="w-10 h-10 rounded-lg bg-emerald-50 flex items-center justify-center mb-2 text-emerald-600 shadow-inner">
                 <Shield size={20} />
               </div>
-              <h3 className="font-semibold text-white">XGBoost Predictions</h3>
-              <p className="text-sm text-gray-400">Hyperparametered ML models predict your exact placement probability.</p>
+              <h3 className="font-semibold text-gray-900">Data Driven</h3>
+              <p className="text-sm text-gray-600">Live placement probability scoring via XGBoost models on your performance.</p>
             </div>
           </div>
           

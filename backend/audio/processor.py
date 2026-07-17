@@ -5,8 +5,10 @@ import numpy as np
 from dotenv import load_dotenv
 from groq import Groq
 
-# Load environment variables from .env
-load_dotenv()
+# Load environment variables from the absolute path of the root .env file
+root_env_path = os.path.join(os.path.dirname(os.path.dirname(os.path.dirname(__file__))), ".env")
+load_dotenv(dotenv_path=root_env_path)
+
 GROQ_API_KEY = os.environ.get("GROQ_API_KEY", "")
 groq_client = Groq(api_key=GROQ_API_KEY) if GROQ_API_KEY else None
 
@@ -17,7 +19,7 @@ def transcribe_audio(file_path: str) -> str:
     if not groq_client:
         raise RuntimeError("GROQ_API_KEY is not set. Cannot transcribe audio.")
         
-    print(f"🎙️ Transcribing audio file via Groq Whisper API: {file_path}")
+    print(f" Transcribing audio file via Groq Whisper API: {file_path}")
     
     def _do_transcribe():
         with open(file_path, "rb") as file:
@@ -42,11 +44,11 @@ def transcribe_audio(file_path: str) -> str:
             return str(result).strip()
         except Exception as e:
             if attempt == max_retries - 1:
-                print(f"⚠️ Groq Whisper transcription failed: {e}")
+                print(f" Groq Whisper transcription failed: {e}")
                 # Return empty string to allow graceful degradation handled by main.py
                 return "" 
             delay = base_delay * (2 ** attempt)
-            print(f"⚠️ Transcription failed. Retrying in {delay} seconds... (Error: {e})")
+            print(f" Transcription failed. Retrying in {delay} seconds... (Error: {e})")
             time.sleep(delay)
 
 def analyze_confidence(file_path: str) -> float:
@@ -90,9 +92,9 @@ def analyze_confidence(file_path: str) -> float:
         if final_score < 40:
             final_score = 40 + (final_score / 2)
             
-        print(f"📊 Librosa Audio Analysis: Speaking Ratio: {speaking_ratio:.2f}, Score: {final_score:.1f}")
+        print(f" Librosa Audio Analysis: Speaking Ratio: {speaking_ratio:.2f}, Score: {final_score:.1f}")
         return float(final_score)
         
     except Exception as e:
-        print(f"⚠️ Error in audio analysis: {e}")
+        print(f" Error in audio analysis: {e}")
         return 75.0  # Safe fallback

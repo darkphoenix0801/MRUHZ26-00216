@@ -7,7 +7,7 @@ if (typeof window !== "undefined") {
   gsap.registerPlugin(ScrollTrigger);
 }
 
-const BACKEND = "http://localhost:8000";
+const BACKEND = "http://127.0.0.1:8000";
 
 /* ── flatten all topics into ordered steps ── */
 interface Step {
