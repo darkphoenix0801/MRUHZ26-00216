@@ -5,6 +5,7 @@ from dotenv import load_dotenv
 from backend.agent.prompts import RESUME_EXTRACTION_PROMPT, ROADMAP_GENERATION_PROMPT
 from groq import Groq
 from google import genai
+# pyrefly: ignore [missing-import]
 from google.genai import types
 
 # Load environment variables from .env
