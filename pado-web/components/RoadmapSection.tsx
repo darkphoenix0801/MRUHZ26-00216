@@ -7,7 +7,7 @@ if (typeof window !== "undefined") {
   gsap.registerPlugin(ScrollTrigger);
 }
 
-const BACKEND = "https://mruhz26-00216.onrender.com";
+const BACKEND = "https://pado-backend-5kg8.onrender.com";
 
 /* ── flatten all topics into ordered steps ── */
 interface Step {

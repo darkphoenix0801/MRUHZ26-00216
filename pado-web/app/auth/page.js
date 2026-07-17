@@ -35,7 +35,7 @@ export default function AuthPage() {
             target_company: "Any"
           };
 
-      const res = await fetch(`https://mruhz26-00216.onrender.com${endpoint}`, {
+      const res = await fetch(`https://pado-backend-5kg8.onrender.com${endpoint}`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(payload),

@@ -2,7 +2,7 @@
 import { useState, useRef, useEffect } from "react";
 import { gsap } from "gsap";
 
-const BACKEND = "https://mruhz26-00216.onrender.com";
+const BACKEND = "https://pado-backend-5kg8.onrender.com";
 
 function ScoreBar({ score }: { score: number }) {
   return (
