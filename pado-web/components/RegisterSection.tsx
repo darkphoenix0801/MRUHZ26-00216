@@ -3,7 +3,7 @@ import { useState, useRef, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { gsap } from "gsap";
 
-const BACKEND = "http://127.0.0.1:8000";
+const BACKEND = "https://mruhz26-00216.onrender.com";
 
 export default function RegisterSection({ user }: { user: any }) {
   const router = useRouter();
