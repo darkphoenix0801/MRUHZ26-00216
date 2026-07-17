@@ -86,10 +86,10 @@ export default function IdeaSection() {
   }, []);
 
   return (
-    <section ref={sectionRef} className="py-32 bg-gray-50 relative overflow-hidden border-t border-gray-100">
+    <section ref={sectionRef} className="py-16 bg-transparent relative overflow-hidden border-t border-gray-200/50">
       
       <div className="container mx-auto px-6 relative z-10 max-w-6xl">
-        <div ref={textRef} className="text-center mb-24">
+        <div ref={textRef} className="text-center mb-16">
           <h2 className="text-sm font-bold tracking-[0.3em] text-indigo-500 uppercase mb-4">Core Philosophy</h2>
           <h3 className="text-4xl md:text-6xl font-bold text-gray-900 mb-6">
             The <span className="text-transparent bg-clip-text bg-gradient-to-r from-indigo-600 to-purple-600">I.D.E.A</span> Framework

@@ -56,10 +56,10 @@ export default function HowItWorks() {
   ];
 
   return (
-    <section id="how-it-works" ref={sectionRef} className="py-32 relative bg-white border-t border-gray-100">
+    <section id="how-it-works" ref={sectionRef} className="py-16 pb-32 relative bg-transparent border-t border-gray-200/50">
       
       <div className="container mx-auto px-6 relative z-10 max-w-6xl">
-        <div className="text-center mb-20">
+        <div className="text-center mb-16">
           <h2 className="text-4xl md:text-5xl font-extrabold mb-6 text-gray-900">
             The <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-emerald-500">End-to-End</span> Pipeline
           </h2>

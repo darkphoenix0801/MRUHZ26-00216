@@ -76,14 +76,14 @@ export default function Hero() {
             
             <Link 
               href="#how-it-works" 
-              className="w-full sm:w-auto px-8 py-4 glass text-white font-medium rounded-full hover:bg-white/10 transition-colors flex items-center justify-center"
+              className="w-full sm:w-auto px-8 py-4 bg-indigo-50 text-indigo-700 font-medium rounded-full hover:bg-indigo-100 transition-colors flex items-center justify-center border border-indigo-100"
             >
               See how it works
             </Link>
           </div>
           
           {/* Feature Highlights */}
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mt-24 w-full text-left">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mt-16 w-full text-left">
             <div className="bg-white/80 backdrop-blur-sm border border-gray-100 p-6 rounded-2xl flex flex-col gap-3 shadow-[0_4px_20px_rgba(0,0,0,0.05)] hover:-translate-y-1 transition-transform">
               <div className="w-10 h-10 rounded-lg bg-blue-50 flex items-center justify-center mb-2 text-blue-600 shadow-inner">
                 <Brain size={20} />

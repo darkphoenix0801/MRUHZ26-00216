@@ -76,7 +76,7 @@ export default function ValueProposition() {
   ];
 
   return (
-    <section ref={sectionRef} className="py-32 relative bg-white overflow-hidden">
+    <section ref={sectionRef} className="py-16 relative bg-transparent overflow-hidden">
       {/* Colorful Background Blobs */}
       <div className="absolute inset-0 z-0 overflow-hidden opacity-60">
         <div className="blob-shape absolute top-[10%] left-[5%] w-[400px] h-[400px] bg-blue-200 rounded-full mix-blend-multiply filter blur-[80px]"></div>
@@ -85,7 +85,7 @@ export default function ValueProposition() {
       </div>
 
       <div className="container mx-auto px-6 relative z-10 max-w-5xl">
-        <div className="text-center mb-24">
+        <div className="text-center mb-16">
           <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-indigo-50 border border-indigo-100 text-sm font-bold text-indigo-600 shadow-sm mb-6">
             <ShieldCheck size={16} />
             <span>The Ultimate Advantage</span>

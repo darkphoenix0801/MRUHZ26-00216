@@ -8,7 +8,19 @@ export default function Home() {
   return (
     <>
       <Navbar />
-      <main className="min-h-screen bg-white text-gray-900 selection:bg-indigo-500/30 selection:text-indigo-900 overflow-hidden">
+      <main className="min-h-screen bg-transparent text-gray-900 selection:bg-indigo-500/30 selection:text-indigo-900 overflow-hidden relative">
+        {/* Dynamic Videographic Background */}
+        <video 
+          autoPlay 
+          loop 
+          muted 
+          playsInline
+          className="fixed inset-0 w-full h-full object-cover z-[-1] opacity-20 mix-blend-multiply pointer-events-none"
+        >
+          <source src="https://assets.mixkit.co/videos/preview/mixkit-white-abstract-background-with-fluid-shapes-loop-42861-large.mp4" type="video/mp4" />
+          <source src="https://cdn.pixabay.com/video/2023/03/12/154378-807572718_large.mp4" type="video/mp4" />
+        </video>
+        
         <Hero />
         <ValueProposition />
         <IdeaSection />
