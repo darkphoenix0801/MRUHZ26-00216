@@ -69,7 +69,7 @@ export default function IdeaSection() {
       });
 
       // Floating animation for the letters
-      gsap.utils.toArray('.idea-letter').forEach((letter, i) => {
+      gsap.utils.toArray('.idea-letter').forEach((letter: any, i) => {
         gsap.to(letter, {
           y: "random(-10, 10)",
           rotation: "random(-5, 5)",

@@ -14,7 +14,7 @@ export default function ValueProposition() {
   useEffect(() => {
     let ctx = gsap.context(() => {
       // Floating abstract shapes
-      gsap.utils.toArray('.blob-shape').forEach((blob, i) => {
+      gsap.utils.toArray('.blob-shape').forEach((blob: any, i) => {
         gsap.to(blob, {
           y: "random(-40, 40)",
           x: "random(-40, 40)",
