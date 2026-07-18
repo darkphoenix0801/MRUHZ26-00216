@@ -13,17 +13,7 @@ export default function HowItWorks() {
 
   useEffect(() => {
     const ctx = gsap.context(() => {
-      gsap.from(cardsRef.current.children, {
-        y: 60,
-        opacity: 0,
-        duration: 0.8,
-        stagger: 0.2,
-        ease: "back.out(1.2)",
-        scrollTrigger: {
-          trigger: sectionRef.current,
-          start: "top 70%",
-        }
-      });
+      // GSAP ScrollTrigger animations removed to guarantee visibility
     }, sectionRef);
     return () => ctx.revert();
   }, []);

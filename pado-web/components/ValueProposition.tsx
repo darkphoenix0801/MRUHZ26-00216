@@ -27,18 +27,7 @@ export default function ValueProposition() {
         });
       });
 
-      // Staggered reveal for value items
-      gsap.from(itemsRef.current.children, {
-        y: 80,
-        opacity: 0,
-        duration: 1,
-        stagger: 0.3,
-        ease: "power3.out",
-        scrollTrigger: {
-          trigger: itemsRef.current,
-          start: "top 75%",
-        }
-      });
+      // Staggered reveal for value items removed to fix scrolltrigger blank space issues
     }, sectionRef);
 
     return () => ctx.revert();

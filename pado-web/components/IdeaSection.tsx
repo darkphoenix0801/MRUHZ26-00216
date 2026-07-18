@@ -40,33 +40,7 @@ export default function IdeaSection() {
 
   useEffect(() => {
     let ctx = gsap.context(() => {
-      // Reveal header
-      gsap.from(textRef.current.children, {
-        y: 40,
-        opacity: 0,
-        duration: 1,
-        stagger: 0.2,
-        ease: "power3.out",
-        scrollTrigger: {
-          trigger: textRef.current,
-          start: "top 80%",
-        }
-      });
-
-      // Cards staggered entrance
-      gsap.from(cardsRef.current.children, {
-        y: 80,
-        opacity: 0,
-        rotationX: -15,
-        transformOrigin: "bottom center",
-        duration: 0.8,
-        stagger: 0.2,
-        ease: "back.out(1.2)",
-        scrollTrigger: {
-          trigger: cardsRef.current,
-          start: "top 75%",
-        }
-      });
+      // GSAP ScrollTrigger animations removed to guarantee visibility
 
       // Floating animation for the letters
       gsap.utils.toArray('.idea-letter').forEach((letter: any, i) => {
