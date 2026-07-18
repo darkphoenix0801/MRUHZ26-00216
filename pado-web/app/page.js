@@ -9,7 +9,9 @@ export default function Home() {
   return (
     <>
       <Navbar />
-      <Marquee />
+      <div className="pt-20">
+        <Marquee />
+      </div>
       <main className="min-h-screen bg-transparent text-gray-900 selection:bg-indigo-500/30 selection:text-indigo-900 overflow-hidden relative">
         {/* Dynamic Videographic Background */}
         <video 
