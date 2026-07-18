@@ -56,7 +56,7 @@ export default function HowItWorks() {
   ];
 
   return (
-    <section id="how-it-works" ref={sectionRef} className="py-16 pb-32 relative bg-transparent border-t border-gray-200/50">
+    <section id="how-it-works" ref={sectionRef} className="py-8 pb-16 relative bg-transparent border-t border-gray-200/50">
       
       <div className="container mx-auto px-6 relative z-10 max-w-6xl">
         <div className="text-center mb-16">

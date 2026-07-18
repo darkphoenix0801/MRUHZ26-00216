@@ -3,11 +3,13 @@ import Hero from "@/components/Hero";
 import HowItWorks from "@/components/HowItWorks";
 import ValueProposition from "@/components/ValueProposition";
 import IdeaSection from "@/components/IdeaSection";
+import Marquee from "@/components/Marquee";
 
 export default function Home() {
   return (
     <>
       <Navbar />
+      <Marquee />
       <main className="min-h-screen bg-transparent text-gray-900 selection:bg-indigo-500/30 selection:text-indigo-900 overflow-hidden relative">
         {/* Dynamic Videographic Background */}
         <video 

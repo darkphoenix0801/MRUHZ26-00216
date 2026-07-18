@@ -189,5 +189,28 @@ def get_weekly_progress(student_id):
     conn.close()
     return [dict(row) for row in rows]
 
+def get_all_students():
+    """Retrieves all registered students for Admin Panel."""
+    conn = get_db_connection()
+    cursor = conn.cursor()
+    cursor.execute("SELECT student_id, name, cgpa, target_company, created_at FROM student_profile ORDER BY created_at DESC")
+    rows = cursor.fetchall()
+    conn.close()
+    return [dict(row) for row in rows]
+
+def get_all_interview_logs():
+    """Retrieves all interview activity logs for Admin Panel."""
+    conn = get_db_connection()
+    cursor = conn.cursor()
+    cursor.execute("""
+    SELECT s.name, i.student_id, i.session_id, i.question_category, i.content_score, i.timestamp 
+    FROM interview_sessions i
+    JOIN student_profile s ON i.student_id = s.student_id
+    ORDER BY i.timestamp DESC LIMIT 50
+    """)
+    rows = cursor.fetchall()
+    conn.close()
+    return [dict(row) for row in rows]
+
 if __name__ == "__main__":
     init_db()

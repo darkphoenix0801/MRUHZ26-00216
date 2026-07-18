@@ -86,7 +86,7 @@ export default function IdeaSection() {
   }, []);
 
   return (
-    <section ref={sectionRef} className="py-16 bg-transparent relative overflow-hidden border-t border-gray-200/50">
+    <section ref={sectionRef} className="py-8 bg-transparent relative overflow-hidden border-t border-gray-200/50">
       
       <div className="container mx-auto px-6 relative z-10 max-w-6xl">
         <div ref={textRef} className="text-center mb-16">

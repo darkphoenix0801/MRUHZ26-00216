@@ -19,7 +19,9 @@ from backend.db import (
     get_roadmap,
     save_weekly_progress,
     get_weekly_progress,
-    get_past_answers
+    get_past_answers,
+    get_all_students,
+    get_all_interview_logs
 )
 from backend.agent.llm_client import (
     extract_skills_from_resume,
@@ -580,6 +582,15 @@ async def parse_resume_file(file: UploadFile = File(...)):
         raise
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Unexpected error: {e}")
+
+# 10. Admin Endpoints
+@app.get("/admin/students")
+def admin_get_students():
+    return get_all_students()
+
+@app.get("/admin/logs")
+def admin_get_logs():
+    return get_all_interview_logs()
 
 # How to run this locally:
 # uvicorn backend.main:app --reload

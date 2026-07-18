@@ -76,7 +76,7 @@ export default function ValueProposition() {
   ];
 
   return (
-    <section ref={sectionRef} className="py-16 relative bg-transparent overflow-hidden">
+    <section ref={sectionRef} className="py-8 relative bg-transparent overflow-hidden">
       {/* Colorful Background Blobs */}
       <div className="absolute inset-0 z-0 overflow-hidden opacity-60">
         <div className="blob-shape absolute top-[10%] left-[5%] w-[400px] h-[400px] bg-blue-200 rounded-full mix-blend-multiply filter blur-[80px]"></div>
