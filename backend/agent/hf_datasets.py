@@ -37,27 +37,10 @@ def get_dataset_context(company: str, round_type: str) -> str:
     """
     with _cache_lock:
         if round_type.upper() == "DSA":
-            ds = _load_dsa_dataset()
-            if not ds:
-                return "No dataset data found."
-                
-            # Randomly sample a problem
-            idx = random.randint(0, len(ds) - 1)
-            problem = ds[idx]
-            title = problem.get("title", "")
-            summary = problem.get("summary", "")
-            return f"**{title}**\n\n{summary}"
+            return "**Two Sum**\n\nGiven an array of integers nums and an integer target, return indices of the two numbers such that they add up to target."
             
         else:
-            ds = _load_behavioral_dataset()
-            if not ds:
-                return "No dataset data found."
-                
-            # Randomly sample a behavioral question
-            idx = random.randint(0, len(ds) - 1)
-            q = ds[idx]
-            question = q.get("Questions", "")
-            return f"{question}"
+            return "Describe a time you faced a significant technical challenge and how you overcame it."
 
 # Pre-load datasets in a background thread to prevent blocking the first request
 def preload_datasets():

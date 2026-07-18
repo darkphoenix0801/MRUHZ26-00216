@@ -99,9 +99,7 @@ def load_model():
     else:
         print(f" Warning: Model file not found at {absolute_model_path}")
         
-    from backend.agent.hf_datasets import preload_datasets
-    print(" Starting Hugging Face dataset background preloading...")
-    preload_datasets()
+    print(" Backend starting up... OOM-heavy datasets disabled.")
 
 # Helper: compute placement probability inside FastAPI internally
 def calculate_placement_probability_internal(cgpa: float, dsa: float, aptitude: float, comms: float, interview: float) -> float:
