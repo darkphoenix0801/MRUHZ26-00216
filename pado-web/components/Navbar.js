@@ -21,8 +21,8 @@ export default function Navbar() {
           
           {/* Logo */}
           <Link href="/" className="flex items-center gap-3 group">
-            <div className="w-10 h-10 rounded-xl bg-white flex items-center justify-center shadow-[0_0_20px_rgba(255,255,255,0.3)] group-hover:shadow-[0_0_30px_rgba(255,255,255,0.5)] transition-all duration-300">
-              <span className="text-black text-xl font-bold tracking-tighter">P</span>
+            <div className="w-10 h-10 rounded-xl bg-white overflow-hidden flex items-center justify-center shadow-[0_0_20px_rgba(255,255,255,0.3)] group-hover:shadow-[0_0_30px_rgba(255,255,255,0.5)] transition-all duration-300">
+              <img src="/logo.jpg" alt="PADO Logo" className="w-full h-full object-cover" />
             </div>
             <span className="font-bold text-2xl tracking-tight text-white hidden sm:block group-hover:text-gray-200 transition-colors">
               PADO
